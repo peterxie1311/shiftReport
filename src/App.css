@@ -1,0 +1,196 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column; /* Ensure the content is stacked vertically */
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+  min-width: 320px;
+  min-height: 100vh;
+  color: white;
+}
+
+p {
+  color: white;
+}
+
+#logo {
+  padding: 0.5em;
+  padding-top: 1em;
+}
+
+#dateContainer {
+  justify-content: flex-start;
+  padding-left: 1em;
+  padding-bottom: 0.5em;
+}
+
+.hourly {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
+#hourlyProduction {
+  grid-template-rows: repeat(11, auto);
+  grid-template-columns: 7em repeat(4, auto);
+  grid-auto-flow: column;    
+}
+
+.hourly > p {
+  margin: 2px;
+}
+
+#hourlyNotes {
+  grid-template-columns: 7em auto;
+}
+
+.entryField {
+  background-color: rgba(69, 69, 69, 0.8);
+  border-radius: 0.5em;
+  padding: 1em;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  overflow: hidden;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+  margin: 5px;
+}
+
+.entryField > article {
+  display: grid;
+  width: 28em;
+  grid-template-columns: 15em 10em 3em;
+  background-color: rgb(122, 122, 122);
+  margin: 0.5em;
+  border-radius: 0.2em;
+  align-items: center;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.entryField > article > input {
+  margin: 0.1em;
+  border-radius: 0.2em;
+}
+
+main {
+  display: flex;
+  flex-direction: row; /* Ensure main content and sidebar are side by side */
+  width: 100%; /* Use full width of the body */
+  min-height: 89vh;
+  background-image: linear-gradient(to bottom, rgb(0, 51, 75), rgb(30, 38, 43));
+}
+
+/* Basic styling for the sidebar */
+.sidebar {
+  background-color: rgb(59, 59, 59); /* Background color */
+  padding: 1em;
+  width: 15%; /* Adjust width as needed */
+  min-width: 200px; /* Minimum width to avoid squishing */
+  border-right: 1px solid rgb(80, 80, 80);
+}
+
+.sidebarList li a:hover {
+  background-color: rgb(70, 70, 90);
+  color: rgb(212, 212, 255);
+}
+
+.sidebarList > li > a {
+  color: white;
+  background-color: rgb(70, 70, 70);
+  margin: 0.3em;
+  padding: 0.2em;
+  padding-left: 0.6em;
+  text-align: left;
+  border-radius: 0.3em;
+}
+
+header {
+  background-color: rgb(32, 32, 32);
+  border-bottom: 1px solid rgb(80, 80, 80);
+  width: 100%;
+}
+
+/* Styling for the main content */
+.main-content {
+  width: 85%; /* Adjust the width as needed */
+  padding: 1em;
+}
+
+.workspace {
+  padding: 1em;
+  display: flex;
+  flex-direction: row;
+}
+
+#root {
+  width: 100%;
+}
+
+.footer {
+  background-color: rgb(43, 43, 43); /* Background color */
+  padding: 1em; /* Optional padding */
+  border-top: 1px solid rgb(80, 80, 80);
+  height: 11vh;
+  min-height: 7em;
+  width: 100%;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+h4 {
+  color : white !important;
+}
+
+label {
+  color: white !important;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}

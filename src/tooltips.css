@@ -1,0 +1,62 @@
+.dotTooltip {
+    cursor: default;
+    position: relative;
+}
+
+.dotTooltip .tooltip {
+    background: rgb(32, 32, 32);
+    bottom: 100%;
+    color: #fff;
+    display: block;
+    left: -26em;
+    top: -2.3em;
+    opacity: 0;
+    visibility: hidden;
+    padding: 1em;
+    position: relative;
+    width: 25em;
+    -webkit-transform: translateX(-10px);
+        transform: translateX(-10px);
+    transition: all .25s ease-out;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+/* This bridges the gap so you can mouse into the tooltip without it disappearing */
+.dotTooltip .tooltip:before {
+    content: "";
+    display: block;
+    height: 1em;
+    left: 0;
+    position: absolute;
+    width: 130%;
+}
+
+/* Triangle */
+.dotTooltip .tooltip:before {
+border-top: solid transparent 10px;
+border-bottom: solid transparent 10px;
+border-left: solid rgb(32, 32, 32) 10px;
+top: 1em;
+left: 26em;
+margin-left: -1em;
+}
+
+.dotTooltip:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    -webkit-transform: translateY(0px);
+        transform: translateY(0px);
+}
+
+.dotTooltip {
+    font-size: 12px;
+    height: 1.5em;
+    width: 1.5em;
+    background-color: rgba(69, 69, 69, 0.5);
+    color: rgba(211, 211, 211, 0.6);
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+    margin-left: 0.5em;
+}
