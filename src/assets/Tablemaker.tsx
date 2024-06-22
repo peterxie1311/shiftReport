@@ -13,19 +13,22 @@ interface ProductionProps {
 }
 
 const Production: FC<ProductionProps> = ({ columns, rows,crews, inputValues, handleChange,mouseChange }) => {
+  
 
   
 
   return (
     <div className="container entryField">
+
       <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false" >
       {inputValues.selectedCrew ? inputValues.selectedCrew : 'Crews'}
       </button>
       <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
-        {crews.map((stuff:string,index:number)=>(
-          <li key={index}><a className="dropdown-item" onClick={mouseChange}>{stuff}</a></li>
+        {crews.map((stuff:string, index:number)=>(
+          <li key={index+stuff}><a className="dropdown-item" onClick={mouseChange}>{stuff}</a></li>
         ))}
       </ul>
+
       <br/>
       <br/>
       <br/>
@@ -43,7 +46,7 @@ const Production: FC<ProductionProps> = ({ columns, rows,crews, inputValues, han
         ))}
 
         <p>COMs</p>
-        <p>20 000</p>
+        <p>18 250</p>
         {rows.map((stuff: string) => (
           <input
             key={'Coms ' + stuff  }
@@ -55,7 +58,7 @@ const Production: FC<ProductionProps> = ({ columns, rows,crews, inputValues, han
         ))}
 
         <p>Depal</p>
-        <p>19 200</p>
+        <p>17 500</p>
         {rows.map((stuff: string) => (
           <input
             key={'Depal '+stuff }
@@ -67,7 +70,7 @@ const Production: FC<ProductionProps> = ({ columns, rows,crews, inputValues, han
         ))}
 
         <p>AIO</p>
-        <p>9 200</p>
+        <p>8 000</p>
         {rows.map((stuff: string) => (
           <input
             key={'Aio '+stuff  }
@@ -79,7 +82,7 @@ const Production: FC<ProductionProps> = ({ columns, rows,crews, inputValues, han
         ))}
 
         <p>Repack</p>
-        <p>9 200</p>
+        <p>8 000</p>
         {rows.map((stuff: string) => (
           <input
             key={'Repack '+stuff  }
