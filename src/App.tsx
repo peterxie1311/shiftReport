@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent ,MouseEventHandler} from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import './App.css';
 
 
@@ -56,7 +56,7 @@ const App: React.FC = () => {
 
   const downloadEmailDraft = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/download_email_draft', {
+      const response = await axios.get('http://10.168.27.29:8080/download_email_draft', {
         params: {
           data: inputArray
         },
@@ -96,7 +96,7 @@ const App: React.FC = () => {
 
     if(notFilledNum.length+notFilledString.length+notFilledTable.length===0){
     
-    axios.post<{ message: string }>('http://localhost:8080/api/data', inputArray)
+    axios.post<{ message: string }>('http://10.168.27.29:8080/api/data', inputArray)
       .then(response => {
         responseData = response.data.message
 
@@ -130,7 +130,7 @@ const App: React.FC = () => {
   }));
 
 
-  let comTotal=0;
+
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;

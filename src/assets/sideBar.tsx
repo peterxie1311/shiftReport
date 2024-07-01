@@ -1,9 +1,4 @@
-import React, { FC } from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { FC } from 'react';
 
 interface SideBarProps {
   input1: string[];

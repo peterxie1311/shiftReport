@@ -1,4 +1,4 @@
-import React, { FC, useState, ChangeEvent,MouseEventHandler } from 'react';
+import React, { FC, ChangeEvent } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
@@ -12,7 +12,7 @@ interface ProductionProps {
   mouseChange: (event: React.MouseEvent<HTMLAnchorElement>)=> void;
 }
 
-const Production: FC<ProductionProps> = ({ columns, rows,crews, inputValues, handleChange,mouseChange }) => {
+const Production: FC<ProductionProps> = ({  rows,crews, inputValues, handleChange,mouseChange }) => {
   
 
   

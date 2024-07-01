@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent } from 'react';
+import  { FC, ChangeEvent } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface BoxProps {
