@@ -28,6 +28,8 @@ def process_data():
         column_names = set(d['name'] for d in data)
         data_dict = {name: [] for name in column_names}
 
+        
+
         for d in data:
             data_dict[d['name']].append(d['value'])
 
@@ -42,7 +44,7 @@ def process_data():
         for i in column_names:
             if i not in dataColumns:
                 data.append({'name': i, 'value': 'Na'})
-
+       # print(data)
         for d in data:
             data_dict[d['name']].append(d['value'])
 
@@ -57,7 +59,7 @@ def process_data():
             ws.append(row)
         wb.save(filepath)
 
-    print('working')
+  #  print('working')
     return jsonify({"message": "success"})
 
 
@@ -65,7 +67,7 @@ def process_data():
 @app.route('/download_email_draft')
 def download_email_draft():
     pythoncom.CoInitialize()  # Initialize COM library
-    print('HELLO')
+    #print('HELLO')
 
     # Convert ImmutableMultiDict to a regular dictionary
     data = request.args.to_dict(flat=False)
@@ -83,8 +85,8 @@ def download_email_draft():
 
     # Append generation date
     data_list.append({'name': 'GenDate', 'value': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
-    print('PRINTING DATA_LIST!!')
-    print(data_list)
+    #print('PRINTING DATA_LIST!!')
+   # print(data_list)
 
     # Convert list of dictionaries to DataFrame
     data_dict = {d['name']: [] for d in data_list}
@@ -95,13 +97,74 @@ def download_email_draft():
 
     # Use the DataFrame to create email draft
     html_table = df.to_html(index=False)
-    print(html_table)
+    #print(html_table)
+
+    dfTable=''
+    for i,r in df.iterrows():
+        for col_name, value in r.items():
+            dfTable += f"<tr>\n"
+            dfTable += f"<td>{col_name}</td>\n"
+            dfTable += f"<td>{value}</td>\n"
+            dfTable += f"</tr>"
+           # print(f"Column: {col_name}, Value: {value}")
+
+    table = f"""
+            <html>
+            <head>
+            <style>
+                table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                }}
+                th, td {{
+                    padding: 10px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                }}
+                tr:nth-child(even) {{
+                    background-color: #f2f2f2;
+                }}
+                th {{
+                    background-color: #4CAF50;
+                    color: white;
+                }}
+            </style>
+            </head>
+            <body>
+            <p>Shift Report for: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
+            <table class="dataframe">
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {dfTable}
+                </tbody>
+            </table>
+            </body>
+            </html>
+            """
+
+    html_content = f"""
+    <html>
+    <head></head>
+    <body>
+    <p>Shift Report for: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
+    {table}
+    </body>
+    </html>
+    """
+    
+    # Print the HTML content to ensure it's well-formed
+    print(table)
+
 
 
     try:
         # Create an instance of the Outlook application
         outlook = win32.Dispatch("Outlook.Application")
-
         # Create a new mail item
         mail = outlook.CreateItem(0)
         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -110,16 +173,9 @@ def download_email_draft():
         # Set the mail item properties
         mail.Subject = "Daily Report"
         mail.BodyFormat = 2  # Set the email body format to HTML
-        mail.HTMLBody = f"""
-        <html>
-        <head></head>
-        <body>
-        <p>{headerstr}</p>
-        {html_table}
-        </body>
-        </html>
-        """
+        mail.HTMLBody = table
         mail.To = "recipient@example.com"
+
 
         # Specify the directory where you want to save the temporary file
         custom_dir = 'C:\\Users\\pxie\\Desktop\\shiftreport\\api'  # Change this to your desired directory
@@ -127,7 +183,7 @@ def download_email_draft():
             os.makedirs(custom_dir)
 
         # Save the mail item as a draft in the specified directory
-        temp_file_path = os.path.join(custom_dir, 'email_draft.msg')  # Changed to .msg format
+        temp_file_path = os.path.join(custom_dir, 'email_draf123t.msg')  # Changed to .msg format
         try:
             mail.SaveAs(temp_file_path, 3)  # Save as .msg file
 
@@ -135,12 +191,7 @@ def download_email_draft():
             return send_file(temp_file_path, as_attachment=True)
         except Exception as e:
             print(f'Failed to save email draft: {e}')
-        finally:
-            # Clean up the temporary file if needed
-            if os.path.exists(temp_file_path):
-               #os.remove(temp_file_path)
-               print('SKIP DELETE ')
-             
+       
     finally:
         pythoncom.CoUninitialize()  # Uninitialize COM library
 
