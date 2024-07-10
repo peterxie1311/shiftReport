@@ -24,13 +24,13 @@ const App: React.FC = () => {
     ['Inbound Rejected Pallets','LMFC14'],
     ['Incidents', 'Amount of Incidents'],['Attendance', 'Amount of people that attended']];
 
-    const rowMaker: string[] = [];
+    let rowMaker: string[] = [];
     const rowsDefault: string[] = ['Hour 1', 'Hour 2', 'Hour 3', 'Hour 4', 'Hour 5', 'Hour 6', 'Hour 7', 'Hour 8', 'Hour 9'];
     const rowsMorning: string[] = [ '6:00am', '7:00am', '8:00am', '9:00am', '10:00am', '11:00am', '12:00pm', '1:00pm','2:00pm'];
     const rowsEvening: string[] = [ '2:15pm', '3:00pm','4:00pm','5:00pm','6:00pm','8:00pm','9:00pm','10:00pm','11:15pm'];
     const rowsNight: string[] = [ '5:00pm', '6:00pm','7:00pm','8:00pm','9:00pm','10:00pm','11:00pm','12:00am','1:00am'];
     const columns: string[] = ['Coms ','Depal ','Aio ','Repack '];
-    const inputString = [['Report By', 'Which PTM'], ['Shift', 'What Shift'],['Blocked Equipment Comments','BL01'],['Avg OPM Availability','Ask Aiden']];
+    const inputString = [['Report By', 'Which PTM'], ['Blocked Equipment Comments','BL01'],['Avg OPM Availability','Ask Aiden']];
     const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
     const [rows, setRows] = useState<string[]>(rowsDefault);
 
@@ -42,12 +42,16 @@ const App: React.FC = () => {
     useEffect(()=>{
       if (inputValues.Shift === 'Morning') {
         setRows(rowsMorning);
+        rowMaker = rows;
       } else if (inputValues.Shift === 'Evening') {
         setRows(rowsEvening);
+        rowMaker = rows;
       } else if (inputValues.Shift === 'Night') {
         setRows(rowsNight);
+        rowMaker = rows;
       } else{
         setRows(rowsDefault);
+        rowMaker = rows;
       }
     },[inputValues])
   // This is to create the tables for final Check  -------------------------------------------
@@ -142,6 +146,7 @@ const App: React.FC = () => {
         //calculate com total
         let comTotal = 0;
         rowCols.forEach(things => {
+          console.log(things)
             if(things[0].includes('Com')) {
                 // Use the newValues object to ensure we are including the latest input value
                 comTotal += parseFloat(newValues[things[0]] || '0');
@@ -149,6 +154,8 @@ const App: React.FC = () => {
         });
 
         //updates comtotal
+        console.log(comTotal);
+        console.log(newValues);
         newValues['COM Total'] = comTotal.toString();
 
         //calculate depal total 

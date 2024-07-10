@@ -125,7 +125,7 @@ def download_email_draft():
                     background-color: #f2f2f2;
                 }}
                 th {{
-                    background-color: #4CAF50;
+                    background-color: #213547;
                     color: white;
                 }}
             </style>
