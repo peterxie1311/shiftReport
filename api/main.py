@@ -13,53 +13,55 @@ import tempfile
 
 app = Flask(__name__)
 cors = CORS(app, origins='*')
+mailTo = "coles_bri_lcc@witron.com"
+mailCc = "coles_bri_lcc@witron.com"
 
 @app.route("/api/data", methods=['POST'])
 def process_data():
     data = request.json
 
-    filepath = 'database.xlsx'
+    filepath = 'database.csv'
 
     data.append({'name': 'GenDate', 'value': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
     dataColumns = [i['name'] for i in data]
+   
+
+    #print('THIS IS WHERE TO CHECK')
+    #print(dataColumns)
+    #print('DATA!!!')
+    #print(data)
 
     if not os.path.isfile(filepath):
         column_names = set(d['name'] for d in data)
         data_dict = {name: [] for name in column_names}
 
-        
-
         for d in data:
             data_dict[d['name']].append(d['value'])
 
+        print(data_dict)    
+
         df = pd.DataFrame(data_dict)
         df = df.fillna(pd.NA)
-        df.to_excel(filepath, index=False)
+        df.to_csv(filepath, index=True)
     else:
-        df = pd.read_excel(filepath, engine='openpyxl')
+        df = pd.read_csv(filepath)
         column_names = df.columns.tolist()
         data_dict = {name: [] for name in column_names}
 
         for i in column_names:
             if i not in dataColumns:
                 data.append({'name': i, 'value': 'Na'})
-       # print(data)
+
         for d in data:
             data_dict[d['name']].append(d['value'])
 
         dfdata = pd.DataFrame(data_dict)
         dfdata = dfdata.fillna(pd.NA)
 
-        wb = load_workbook(filepath)
-        ws = wb.active
-        datatoAppend = dfdata.values.tolist()
+        df = pd.concat([df, dfdata], ignore_index=True)
+        df.to_csv(filepath, index=False)
 
-        for row in datatoAppend:
-            ws.append(row)
-        wb.save(filepath)
-
-  #  print('working')
     return jsonify({"message": "success"})
 
 
@@ -174,7 +176,8 @@ def download_email_draft():
         mail.Subject = "Daily Report"
         mail.BodyFormat = 2  # Set the email body format to HTML
         mail.HTMLBody = table
-        mail.To = "recipient@example.com"
+        mail.To = mailTo
+        mail.Cc = mailCc
 
 
         # Specify the directory where you want to save the temporary file

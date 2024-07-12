@@ -4,13 +4,26 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
 interface ProductionProps {
   rows: string[];
+  keys: string[];
   inputValues: { [key: string]: string };
+  columns: string[];
+  columnNames :string[];
   handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  
 }
 
-const Production: FC<ProductionProps> = ({  rows, inputValues, handleChange}) => {
-  console.log(rows);
+const Production: FC<ProductionProps> = ({ columnNames,columns,keys,rows, inputValues, handleChange}) => {
+ // console.log(rows);
+
+ function getColor(target:number , input:number): string{
+    if (target > input){
+      return 'lightcoral'
+    } 
+    else if (input > target){
+      return 'lightgreen'
+    }
+    return 'white'
+
+ }
   
   return (
 
@@ -27,53 +40,70 @@ const Production: FC<ProductionProps> = ({  rows, inputValues, handleChange}) =>
           <p key={stuff}>{stuff}</p>
         ))}
 
-        <p>COMs</p>
+        <p>{columnNames[0]}</p>
         <p>18 250</p>
-        {rows.map((stuff: string) => (
+        {keys.map((stuff: string) => (
           <input
-            key={'Coms ' + stuff  }
+            key={columns[0] + stuff  }
             type="number"
-            name={'Coms ' + stuff}
-            value={inputValues['Coms ' + stuff]||''}
+            name={columns[0] + stuff}
+            value={inputValues[columns[0] + stuff]||''}
             onChange={handleChange}
+            style={{ backgroundColor: getColor(8000,Number(inputValues[columns[0] + stuff])),borderColor:  getColor(8000,Number(inputValues[columns[0] + stuff])) }}
           />
         ))}
 
-        <p>Depal</p>
+        <p>{columnNames[1]}</p>
         <p>17 500</p>
-        {rows.map((stuff: string) => (
+        {keys.map((stuff: string) => (
           <input
-            key={'Depal '+stuff }
+            key={columns[1] + stuff }
             type="number"
-            name={'Depal '+stuff}
-            value={inputValues['Depal '+stuff] || ''}
+            name={columns[1] + stuff}
+            value={inputValues[columns[1] + stuff] || ''}
             onChange={handleChange}
+            style={{ backgroundColor: getColor(8000,Number(inputValues[columns[1] + stuff])),borderColor:  getColor(8000,Number(inputValues[columns[1] + stuff])) }}
           />
         ))}
 
-        <p>AIO</p>
+        <p>{columnNames[2]}</p>
         <p>8 000</p>
-        {rows.map((stuff: string) => (
+        {keys.map((stuff: string) => (
           <input
-            key={'Aio '+stuff  }
+            key={columns[2] + stuff  }
             type="number"
-            name={'Aio '+stuff }
-            value={inputValues['Aio '+stuff ] || ''}
+            name={columns[2] + stuff }
+            value={inputValues[columns[2] + stuff ] || ''}
             onChange={handleChange}
+            style={{ backgroundColor: getColor(8000,Number(inputValues[columns[2] + stuff])),borderColor:  getColor(8000,Number(inputValues[columns[2] + stuff])) }}
           />
         ))}
 
-        <p>Repack</p>
+        <p>{columnNames[3]}</p>
         <p>8 000</p>
-        {rows.map((stuff: string) => (
+        {keys.map((stuff: string) => (
           <input
-            key={'Repack '+stuff  }
+            key={columns[3] + stuff  }
             type="number"
-            name={'Repack '+stuff}
-            value={inputValues['Repack '+stuff] || ''}
+            name={columns[3] + stuff}
+            value={inputValues[columns[3] + stuff] || ''}
             onChange={handleChange}
+            style={{ backgroundColor: getColor(8000,Number(inputValues[columns[3] + stuff])),borderColor:  getColor(8000,Number(inputValues[columns[3] + stuff])) }}
           />
         ))}
+
+        <p>{columnNames[4]}</p>
+        <p> </p>
+        {keys.map((stuff: string) => (
+            <input
+              key={columns[4] + stuff  }
+              type="text"
+              name={columns[4] + stuff }
+              value={inputValues[columns[4] + stuff ] || ''}
+              onChange={handleChange}
+              style={{ borderColor:  'white' }}
+            />
+            ))}
       </section>
       <section style={{ width: '100%' }}>
         <br />
