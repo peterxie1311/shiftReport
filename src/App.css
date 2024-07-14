@@ -13,16 +13,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  flex-direction: column; /* Ensure the content is stacked vertically */
-  justify-content: center; /* Center content vertically */
-  align-items: center; /* Center content horizontally */
-  min-width: 320px;
-  min-height: 100vh;
-  color: white;
-}
+
+  
 
 p {
   color: white;
@@ -35,7 +27,7 @@ p {
 
 #dateContainer {
   justify-content: flex-start;
-  padding-left: 1em;
+  padding-left: 0.5em; /* Adjusted */
   padding-bottom: 0.5em;
 }
 
@@ -48,11 +40,11 @@ p {
 #hourlyProduction {
   grid-template-rows: repeat(11, auto);
   grid-template-columns: 7em repeat(4, auto);
-  grid-auto-flow: column;    
+  grid-auto-flow: column;
 }
 
 .hourly > p {
-  margin: 2px;
+  margin: 0.2em; /* Adjusted */
 }
 
 #hourlyNotes {
@@ -68,19 +60,19 @@ p {
   align-items: flex-start;
   flex-wrap: wrap;
   overflow: hidden;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
-  margin: 5px;
+  box-shadow: 0.2em 0.2em 0.6em rgba(0, 0, 0, 0.28); /* Adjusted */
+  margin: 0.5em;
 }
 
 .entryField > article {
   display: grid;
-  width: 28em;
+  width: 28em; /* Adjusted */
   grid-template-columns: 15em 10em 3em;
   background-color: rgb(122, 122, 122);
   margin: 0.5em;
   border-radius: 0.2em;
   align-items: center;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0.2em 0.2em 0.6em rgba(0, 0, 0, 0.2); /* Adjusted */
 }
 
 .entryField > article > input {
@@ -90,19 +82,18 @@ p {
 
 main {
   display: flex;
-  flex-direction: row; /* Ensure main content and sidebar are side by side */
-  width: 100%; /* Use full width of the body */
+  flex-direction: row;
+  width: 100%;
   min-height: 89vh;
   background-image: linear-gradient(to bottom, rgb(0, 51, 75), rgb(30, 38, 43));
 }
 
-/* Basic styling for the sidebar */
 .sidebar {
-  background-color: rgb(59, 59, 59); /* Background color */
+  background-color: rgb(59, 59, 59);
   padding: 1em;
-  width: 15%; /* Adjust width as needed */
-  min-width: 200px; /* Minimum width to avoid squishing */
-  border-right: 1px solid rgb(80, 80, 80);
+  width: 15em; /* Adjusted */
+  min-width: 12.5em; /* Adjusted */
+  border-right: 0.1em solid rgb(80, 80, 80); /* Adjusted */
 }
 
 .sidebarList li a:hover {
@@ -122,15 +113,16 @@ main {
 
 header {
   background-color: rgb(32, 32, 32);
-  border-bottom: 1px solid rgb(80, 80, 80);
+  border-bottom: 0.1em solid rgb(80, 80, 80); /* Adjusted */
   width: 100%;
 }
 
-/* Styling for the main content */
 .main-content {
-  width: 85%; /* Adjust the width as needed */
-  padding: 1em;
+  
+  margin: auto; /* Center horizontally */
+  /* Additional styles as needed */
 }
+
 
 .workspace {
   padding: 1em;
@@ -143,17 +135,17 @@ header {
 }
 
 .footer {
-  background-color: rgb(43, 43, 43); /* Background color */
-  padding: 1em; /* Optional padding */
-  border-top: 1px solid rgb(80, 80, 80);
+  background-color: rgb(43, 43, 43);
+  padding: 1em;
+  border-top: 0.1em solid rgb(80, 80, 80); /* Adjusted */
   height: 11vh;
   min-height: 7em;
   width: 100%;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
+  border-radius: 0.8em;
+  border: 0.1em solid transparent; /* Adjusted */
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
@@ -168,7 +160,7 @@ button:hover {
 }
 
 h4 {
-  color : white !important;
+  color: white !important;
 }
 
 label {
@@ -177,7 +169,7 @@ label {
 
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 0.4em auto -webkit-focus-ring-color; /* Adjusted */
 }
 
 @media (prefers-color-scheme: light) {
