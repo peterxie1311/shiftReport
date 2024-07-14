@@ -316,7 +316,10 @@ const App: React.FC = () => {
   return (
     <>
       <header>
-        <Witron />
+        <Witron
+          navItems={["Incident Report", "Attendance"]}
+          links={["#", "#"]}
+        />
       </header>
       <main>
         <div className="main-content">
