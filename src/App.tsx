@@ -15,6 +15,18 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 const App: React.FC = () => {
   // to get the signature at the bottom
   SignatureUpdater();
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = ""; // Standard practice to set a message, even though modern browsers may ignore it
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   // Itialising variables ----------------------------------------------------------------------------------------
   const inputNumber = [
     ["Total Open COMs", "Open picks for COMs"],
@@ -317,8 +329,12 @@ const App: React.FC = () => {
     <>
       <header>
         <Witron
-          navItems={["Incident Report", "Attendance"]}
-          links={["#", "#"]}
+          navItems={["Incident Report", "Attendance", "Shift Report"]}
+          links={[
+            "/src/assets/incident/index.html",
+            "/src/assets/attendance/index.html",
+            "/index.html",
+          ]}
         />
       </header>
       <main>
@@ -352,16 +368,18 @@ const App: React.FC = () => {
               targetString={targetString}
             />
           </div>
-          <section className="workspace">
+          <section>
             <BoxToolTip
+              title=""
               inputNum={inputCalcNum}
               inputString={inputCalcString}
               inputValues={inputValues}
               handleChange={handleChange}
             />
           </section>
-          <section className="workspace">
+          <section>
             <BoxToolTip
+              title=""
               inputNum={inputNumber}
               inputString={inputString}
               inputValues={inputValues}
@@ -375,7 +393,7 @@ const App: React.FC = () => {
             inputValues={inputValues}
             handleChange={handleChange}
           />
-          <section className="workspace">
+          <section>
             <button className="btn btn-primary btn-sm" onClick={testSubmit}>
               Submit
             </button>

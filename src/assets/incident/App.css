@@ -1,0 +1,188 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+  
+
+p {
+  color: white;
+}
+
+#logo {
+  padding: 0.5em;
+  padding-top: 1em;
+}
+
+#dateContainer {
+  justify-content: flex-start;
+  padding-left: 0.5em; /* Adjusted */
+  padding-bottom: 0.5em;
+}
+
+.hourly {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
+#hourlyProduction {
+  grid-template-rows: repeat(11, auto);
+  grid-template-columns: 7em repeat(4, auto);
+  grid-auto-flow: column;
+}
+
+.hourly > p {
+  margin: 0.2em; /* Adjusted */
+}
+
+#hourlyNotes {
+  grid-template-columns: 7em auto;
+}
+
+.entryField {
+  background-color: rgba(69, 69, 69, 0.8);
+  border-radius: 0.5em;
+  padding: 1em;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  overflow: hidden;
+  box-shadow: 0.2em 0.2em 0.6em rgba(0, 0, 0, 0.28); /* Adjusted */
+  margin: 0.5em;
+}
+
+.entryField > article {
+  display: grid;
+  width: 28em; /* Adjusted */
+  grid-template-columns: 15em 10em 3em;
+  background-color: rgb(122, 122, 122);
+  margin: 0.5em;
+  border-radius: 0.2em;
+  align-items: center;
+  box-shadow: 0.2em 0.2em 0.6em rgba(0, 0, 0, 0.2); /* Adjusted */
+}
+
+.entryField > article > input {
+  margin: 0.1em;
+  border-radius: 0.2em;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 89vh;
+  background-image: linear-gradient(to bottom, rgb(0, 51, 75), rgb(30, 38, 43));
+}
+
+.sidebar {
+  background-color: rgb(59, 59, 59);
+  padding: 1em;
+  width: 15em; /* Adjusted */
+  min-width: 12.5em; /* Adjusted */
+  border-right: 0.1em solid rgb(80, 80, 80); /* Adjusted */
+}
+
+.sidebarList li a:hover {
+  background-color: rgb(70, 70, 90);
+  color: rgb(212, 212, 255);
+}
+
+.sidebarList > li > a {
+  color: white;
+  background-color: rgb(70, 70, 70);
+  margin: 0.3em;
+  padding: 0.2em;
+  padding-left: 0.6em;
+  text-align: left;
+  border-radius: 0.3em;
+}
+
+header {
+  background-color: rgb(32, 32, 32);
+  border-bottom: 0.1em solid rgb(80, 80, 80); /* Adjusted */
+  width: 100%;
+}
+
+.main-content {
+  
+  margin: auto; /* Center horizontally */
+  /* Additional styles as needed */
+}
+
+
+.workspace {
+  padding: 1em;
+  display: flex;
+  flex-direction: row;
+}
+
+#root {
+  width: 100%;
+}
+
+.footer {
+  background-color: rgb(43, 43, 43);
+  padding: 1em;
+  border-top: 0.1em solid rgb(80, 80, 80); /* Adjusted */
+  height: 11vh;
+  min-height: 7em;
+  width: 100%;
+}
+
+button {
+  border-radius: 0.8em;
+  border: 0.1em solid transparent; /* Adjusted */
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+h4 {
+  color: white !important;
+}
+
+label {
+  color: white !important;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 0.4em auto -webkit-focus-ring-color; /* Adjusted */
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}

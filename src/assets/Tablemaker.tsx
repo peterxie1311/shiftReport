@@ -28,10 +28,10 @@ const Tablemaker: FC<TablemakerProps> = ({
   function getColor(target: number, input: number): string {
     if (target > input) {
       return "lightcoral";
-    } else if (input > target) {
+    } else if (input >= target) {
       return "lightgreen";
     }
-    return "inherit";
+    return "";
   }
 
   return (

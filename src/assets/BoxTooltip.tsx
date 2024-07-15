@@ -1,49 +1,56 @@
-import  { FC, ChangeEvent } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { FC, ChangeEvent } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { title } from "process";
 
 interface BoxProps {
   inputString: string[][];
   inputNum: string[][];
+  title: string;
   inputValues: { [key: string]: string };
-  handleChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  handleChange: (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
 }
 
-const BoxTooltip: FC<BoxProps> = ({ inputString, inputNum, inputValues, handleChange }) => {
+const BoxTooltip: FC<BoxProps> = ({
+  title,
+  inputString,
+  inputNum,
+  inputValues,
+  handleChange,
+}) => {
   return (
     <div className="container entryField">
-      {inputString.map((stuff) => (
-        <article className="container" key={stuff[0]}>
-          <label htmlFor={stuff[0]}>{stuff[0]}</label>
+      {inputString.map((labels) => (
+        <article className="container" key={labels[0]}>
+          <label htmlFor={labels[0]}>{labels[0]}</label>
           <input
-            id={stuff[0]}
+            id={labels[0]}
             type="text"
             onChange={handleChange}
-            name={stuff[0]}
-            value={inputValues[stuff[0]] || ''}
+            name={labels[0]}
+            value={inputValues[labels[0]] || ""}
           />
-          {stuff.length === 2 && (
+          {labels.length === 2 && (
             <span className="dotTooltip">
-              ?
-              <div className="tooltip">{stuff[1]}</div>
+              ?<div className="tooltip">{labels[1]}</div>
             </span>
           )}
         </article>
       ))}
-
-      {inputNum.map((stuff) => (
-        <article className="container" key={stuff[0]}>
-          <label htmlFor={stuff[0]}>{stuff[0]}</label>
+      {inputNum.map((labels) => (
+        <article className="container" key={labels[0]}>
+          <label htmlFor={labels[0]}>{labels[0]}</label>
           <input
-            id={stuff[0]}
+            id={labels[0]}
             type="number"
             onChange={handleChange}
-            name={stuff[0]}
-            value={inputValues[stuff[0]] || ''}
+            name={labels[0]}
+            value={inputValues[labels[0]] || ""}
           />
-          {stuff.length === 2 && (
+          {labels.length === 2 && (
             <span className="dotTooltip">
-              ?
-              <div className="tooltip">{stuff[1]}</div>
+              ?<div className="tooltip">{labels[1]}</div>
             </span>
           )}
         </article>
