@@ -75,13 +75,13 @@ const App: React.FC = () => {
   ];
 
   const [troubleshooting, setTroubleshooting] = useState<string[]>([
-    "Step taken",
+    "Step taken #1",
   ]);
 
   const addTroubleshoot = () => {
     setTroubleshooting((prevTroubleshoot) => [
       ...prevTroubleshoot,
-      "Step taken",
+      `Step taken #${troubleshooting.length + 1}:`,
     ]);
   };
 
@@ -179,7 +179,7 @@ const App: React.FC = () => {
           {troubleshooting.map((titles: string, index: number) => (
             <LargeInput
               key={index}
-              inputLabel={`${titles} ${index + 1}`}
+              inputLabel={`${titles}`}
               rows={5}
               cols={300}
               inputValues={inputValues}
