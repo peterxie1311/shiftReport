@@ -37,7 +37,7 @@ const Tablemaker: FC<TablemakerProps> = ({
   return (
     <>
       <section style={{ width: "100%" }}>
-        <h4>Production Per Hour (UMS):</h4>
+        <h4>Production Per Hour (Cases - SO01):</h4>
       </section>
       <section className="hourly" id="hourlyProduction">
         <p></p>
@@ -74,18 +74,20 @@ const Tablemaker: FC<TablemakerProps> = ({
           </React.Fragment>
         ))}
 
-        {columnString.map((columnNames: string, index: number) => (
+        {columnString.map((p: string, index: number) => (
           <React.Fragment key={index}>
-            <p>{columnNames}</p>
+            <p>{p}</p>
             <p>{targetString[index]}</p>
 
             {keys.map((stuff: string) => (
               <input
-                key={columns[index + columnNames.length] + stuff}
+                key={`${columns[index + columnNames.length]}${stuff}`}
                 type="string"
-                name={columns[index + columnNames.length] + stuff}
+                name={`${columns[index + columnNames.length]}${stuff}`}
                 value={
-                  inputValues[columns[index + columnNames.length] + stuff] || ""
+                  inputValues[
+                    `${columns[index + columnNames.length]}${stuff}`
+                  ] || ""
                 }
                 onChange={handleChange}
                 style={{

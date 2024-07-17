@@ -6,6 +6,7 @@ import SignatureUpdater from "./assets/dateCheck";
 //import SideBar from "./assets/sideBar";
 import LargeInput from "./assets/largeInput";
 import BoxToolTip from "./assets/BoxTooltip";
+import BoxTooltiplabel from "./assets/BoxTooltiplabel";
 import Tablemaker from "./assets/Tablemaker";
 import Dropdown from "./assets/dropdown";
 import axios from "axios";
@@ -28,34 +29,62 @@ const App: React.FC = () => {
     };
   }, []);
   // Itialising variables ----------------------------------------------------------------------------------------
-  const inputNumber = [
-    ["Total Open COMs", "Open picks for COMs"],
-    ["Total Open AIO", "Open picks for AIO"],
-    ["Total Open CPS", "Open picks for CPS"],
-    ["loc Occupied % (HBW)", "SO01 Record at start of your shift"],
-    ["Chnls Occupied % (HBW)", "SO01 Record at start of your shift"],
-    ["Pallets Received", "So01 Record at end of shift"],
-    ["Fault Duration (Mins)", "PR04"],
-    ["Fault Rate (per 1000 cs)", "PR04"],
-    ["Prio 6 Pallets", "RE13"],
-    ["Prio 5 Pallets", "RE13"],
-    ["MDB Occupied %", "IN12a"],
-    ["AVG Cases/Pallet", "OP50"],
-    ["Scratched Cases", "OM25d"],
-    ["Missing Cases", "WP02"],
-    ["Blocked Cases", "IN01"],
-    ["Inbound Rejected Pallets", "LMFC14"],
-    ["Incidents", "Amount of Incidents"],
+  const inputGeneric = [
+    ["Report By", "text", "Which PTM"],
+    ["Incidents", "number", "Amount of Incidents"],
+  ];
+  const calcFields = [
+    ["COM Total", "number", "Sum"],
+    ["Com Cases/Hour Average", "number", "Sum"],
+    ["Depal Total", "number", "Sum"],
+    ["Depal Cases Average", "number", "Sum"],
+    ["Fault Duration (Mins)", "number", "(Fault Secs/60)"],
+    ["Avg OPM Availability", "number", ""],
+    ["Fault Rate (per 1000 cs)", "number", "PR04"],
+  ];
+  const inputSO01 = [
+    ["Cases All", "number", "SO01"],
+    ["Total Open COMs", "number", "SO01 - Start of your shift"],
+    ["Total Open AIO", "number", "SO01 - Start of your shift"],
+    ["Total Open CPS", "number", "SO01 - Start of your shift"],
+    ["loc Occupied % (HBW)", "number", "SO01 Record at start of your shift"],
+    ["Chnls Occupied % (HBW)", "number", "SO01 Record at start of your shift"],
+    ["loc Occupied % (Tray WH)", "number", "SO01"],
+    ["Chnls Occupied % (Tray WH)", "number", "SO01"],
+    ["Pallets Received", "number", "So01 Record at end of shift"],
+  ];
+  const inputPR04 = [
+    [
+      "Fault Duration (Sec)",
+      "number",
+      "From the AVG Duration Col from PR04 grouped by SUM Area, prim, cnt | LAC",
+    ],
+    ["All #Failures", "number", "From ALL # Failures PR04"],
   ];
 
-  const inputCalcNum = [
-    ["COM Total", "Sum"],
-    ["Com Cases/Hour Average", "Hour average"],
-    ["Depal Total", "Sum"],
-    ["Depal Cases Average", "Average Depal"],
+  const inputRE13 = [
+    ["Prio 5 Pallets", "number", "RE13"],
+    ["Prio 6 Pallets", "number", "RE13"],
+  ];
+  const inputMisc = [
+    ["MDB Occupied %", "number", "IN12a"],
+    ["AVG Cases/Pallet", "number", "OP50"],
+    [
+      "Scratched Cases",
+      "number",
+      "OM25d - Rsn Group add filter = User & STRAT SUB = COM",
+    ],
+    ["Missing Cases", "number", "WP02"],
+    ["Blocked Cases", "number", "IN01"],
+    ["#Blocked Equipment", "number", "BL01"],
   ];
 
-  const inputCalcString = [["Avg OPM Availability", "Ask Aiden"]];
+  function excludeCheck(array: string[][], substring: string): string[][] {
+    const returnArray = array.filter((subArray) =>
+      subArray.every((value) => !value.includes(substring))
+    );
+    return returnArray;
+  }
 
   const rowsDefault: string[] = [
     "Hour 1",
@@ -69,47 +98,45 @@ const App: React.FC = () => {
     "Hour 9",
   ];
   const rowsMorning: string[] = [
-    "6:00am",
-    "7:00am",
-    "8:00am",
-    "9:00am",
-    "10:00am",
-    "11:00am",
-    "12:00pm",
-    "1:00pm",
-    "2:00pm",
+    "5 - 6am",
+    "6 - 7am",
+    "7 - 8am",
+    "8 - 9am",
+    "9 - 10am",
+    "10 - 11am",
+    "11 - 12pm",
+    "12 - 1pm",
+    "1 - 2pm",
   ];
   const rowsEvening: string[] = [
-    "2:15pm",
-    "3:00pm",
-    "4:00pm",
-    "5:00pm",
-    "6:00pm",
-    "8:00pm",
-    "9:00pm",
-    "10:00pm",
-    "11:15pm",
+    "2 - 3pm",
+    "3 - 4pm",
+    "4 - 5pm",
+    "5 - 6pm",
+    "6 - 7pm",
+    "7 - 8pm",
+    "8 - 9pm",
+    "9 - 10pm",
+    "10 - 11pm",
   ];
   const rowsNight: string[] = [
-    "5:00pm",
-    "6:00pm",
-    "7:00pm",
-    "8:00pm",
-    "9:00pm",
-    "10:00pm",
-    "11:00pm",
-    "12:00am",
-    "1:00am",
+    "5 - 6pm",
+    "6 - 7pm",
+    "7 - 8pm",
+    "8 - 9pm",
+    "9 - 10pm",
+    "10 - 11pm",
+    "11 - 12pm",
+    "12 - 1am",
+    "1 - 2am",
   ];
-  const columns: string[] = ["KPI1 ", "KPI2 ", "KPI3 ", "KPI4 ", "KPI5"]; // this is for the handelling of the column names [FYI COLUMNS AND COLUMNNAMES MUST HAVE THE SAME LENGTH!!!!!!!!!]
+  const columns: string[] = ["KPI1 ", "KPI2 ", "KPI3 ", "KPI4 ", "KPI5 "]; // this is for the handelling of the column names [FYI COLUMNS AND COLUMNNAMES MUST HAVE THE SAME LENGTH!!!!!!!!!]
   const columnNames: string[] = ["COMs", "Depal", "AIO", "Repack"]; //this is more for the email and display  [FYI COLUMNS AND COLUMNNAMES MUST HAVE THE SAME LENGTH!!!!!!!!!]
   const columnString: string[] = ["Comments"]; // make sure columnString and targetString have the same length of elements
+  const columnValue: string[] = ["COMs", "Depal", "AIO", "Repack", "Comments"]; // we use this to get kpivalues
   const targetString: string[] = [""];
   const targets: number[] = [18250, 17500, 8000, 8000]; // please make sure this is the same as columns and the target position (e.g. coms = [1] 18250 =[1])
-  const inputString = [
-    ["Report By", "Which PTM"],
-    ["Blocked Equipment Comments", "BL01"],
-  ];
+
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
   const [rows, setRows] = useState<string[]>(rowsDefault);
   const rowCols: string[][] = createRowCols(columns, rowsDefault); // this is to add the values together and to check everything is filled at the end
@@ -125,17 +152,17 @@ const App: React.FC = () => {
 
   const kpiValues = columns.map((column, index) => ({
     name: column.trim(),
-    value: columnNames[index],
+    value: columnValue[index],
   }));
 
   function getKPI(
     kpi: string,
     columns: string[],
-    columnNames: string[]
+    columnValue: string[]
   ): string {
     for (let i = 0; i < columns.length; i++) {
       if (kpi.includes(columns[i])) {
-        const name = kpi.replace(columns[i], columnNames[i] + " ");
+        const name = kpi.replace(columns[i], columnValue[i] + " ");
         for (let j = 0; j < rowsDefault.length; j++) {
           if (name.includes(rowsDefault[j])) {
             return name.replace(rowsDefault[j], rows[j]);
@@ -203,46 +230,22 @@ const App: React.FC = () => {
     return notFilled;
   }
   // -----------------------------------------Download Email Draft from back end ----------------------------------------------------------------
-  const downloadEmailDraft = async () => {
-    try {
-      const response = await axios.get(
-        "http://127.0.0.1:8080/download_email_draft",
-        {
-          params: {
-            data: Object.keys(inputValues).map((key) => ({
-              name: getKPI(key, columns, columnNames),
-              value: inputValues[key], // grabbing final values
-            })),
-          },
-          responseType: "blob",
-        }
-      );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = formattedDate + inputValues["Shift"] + ".msg";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+
   //-------------------------------------------------Post Data to backend --------------------------------------------------------------------------------
   let responseData: string = "failed";
   const postData = () => {
-    const notFilledNum = getnotFilled2d(inputNumber, inputArray);
-    inputString.push(["Shift", ""]);
-    const notFilledString = getnotFilled2d(
-      inputString,
+    //inputBox.push(["Shift", ""]);
+    //  inputBox.push(["Crew", ""]);
+    // const notFilledNum = getnotFilled2d(inputBox, inputArray);
+    const notFilledNum: string[] = [];
+    /* this is to check that all the data is filled */ // NEED TO CHANGE HOW WE APPEND THIS ARRAY
+    const notFilledTable = getnotFilled2d(
+      excludeCheck(rowCols, "KPI5"),
       inputArray
-    ); /* this is to check that all the data is filled */ // NEED TO CHANGE HOW WE APPEND THIS ARRAY
-    const notFilledTable = getnotFilled2d(rowCols, inputArray);
-    if (
-      notFilledNum.length + notFilledString.length + notFilledTable.length ===
-      0
-    ) {
+    );
+    if (notFilledNum.length + notFilledTable.length === 0) {
       inputArray.push(...kpiValues);
+      inputArray.push({ name: "Report type", value: "Shift" });
       axios
         .post<{ message: string }>("http://127.0.0.1:8080/api/data", inputArray)
         .then((response) => {
@@ -259,9 +262,44 @@ const App: React.FC = () => {
       alert(
         "You did not enter these values: " +
           notFilledNum.join(", ") +
-          notFilledString.join(", ") +
           notFilledTable.join(", ")
       );
+    }
+  };
+
+  const downloadEmailDraft = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8080/api/download_email_draft",
+        {
+          params: {
+            data: Object.keys(inputValues).map((key) => ({
+              name: getKPI(key, columns, columnValue),
+              value: inputValues[key], // grabbing final values
+            })),
+          },
+          responseType: "blob", // Expecting blob data
+        }
+      );
+
+      // Create a Blob object from the response data
+      const blob = new Blob([response.data]);
+
+      // Create a URL for the Blob object
+      const url = window.URL.createObjectURL(blob);
+
+      // Create an <a> element to trigger the download
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${formattedDate}${inputValues["Shift"]}.msg`; // Adjust filename as needed
+      document.body.appendChild(a);
+      a.click(); // Simulate click
+      document.body.removeChild(a);
+
+      // Clean up by revoking the URL object
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -309,7 +347,14 @@ const App: React.FC = () => {
         100
       ).toFixed(2); // to calculate opm availability
       newValues["Avg OPM Availability"] = opmavail.toString() + "%";
-      console.log(inputValues);
+      newValues["Fault Duration (Mins)"] = (
+        parseFloat(newValues["Fault Duration (Sec)"]) / 60
+      ).toString();
+      newValues["Fault Rate (per 1000 cs)"] = (
+        (parseFloat(newValues["All #Failures"]) /
+          parseFloat(newValues["Cases All"])) *
+        1000
+      ).toString();
       return newValues;
     });
   };
@@ -340,22 +385,33 @@ const App: React.FC = () => {
       <main>
         <div className="main-content">
           <div className="container entryField">
-            <div style={{ display: "flex", flexDirection: "column" }}>
+            <div
+              style={{ display: "flex", flexDirection: "row", gap: "0.5em" }}
+            >
               <Dropdown
                 id={"Shift"}
                 inputValues={inputValues}
                 selections={["Morning", "Evening", "Night"]}
                 mouseChange={handleDropdownItemClick("Shift")}
               />
-              <br />
+
               <Dropdown
                 id={"Crew"}
                 inputValues={inputValues}
                 selections={["Crew A", "Crew B", "Crew C"]}
                 mouseChange={handleDropdownItemClick("Crew")}
               />
-              <br />
             </div>
+          </div>
+          <LargeInput
+            inputLabel="Shift Comments and General Information"
+            rows={5}
+            cols={120}
+            inputValues={inputValues}
+            handleChange={handleChange}
+          />
+
+          <div className="container entryField">
             <Tablemaker
               columnNames={columnNames}
               columns={columns}
@@ -369,30 +425,41 @@ const App: React.FC = () => {
             />
           </div>
           <section>
+            <BoxTooltiplabel input={calcFields} inputValues={inputValues} />
             <BoxToolTip
-              title=""
-              inputNum={inputCalcNum}
-              inputString={inputCalcString}
+              input={inputGeneric}
+              inputValues={inputValues}
+              handleChange={handleChange}
+            />
+            <BoxToolTip
+              input={inputSO01}
+              inputValues={inputValues}
+              handleChange={handleChange}
+            />
+            <BoxToolTip
+              input={inputPR04}
+              inputValues={inputValues}
+              handleChange={handleChange}
+            />
+            <BoxToolTip
+              input={inputRE13}
+              inputValues={inputValues}
+              handleChange={handleChange}
+            />
+            <BoxToolTip
+              input={inputMisc}
+              inputValues={inputValues}
+              handleChange={handleChange}
+            />
+            <LargeInput
+              inputLabel="Blocked Equipment Comments"
+              rows={5}
+              cols={120}
               inputValues={inputValues}
               handleChange={handleChange}
             />
           </section>
-          <section>
-            <BoxToolTip
-              title=""
-              inputNum={inputNumber}
-              inputString={inputString}
-              inputValues={inputValues}
-              handleChange={handleChange}
-            />
-          </section>
-          <LargeInput
-            inputLabel="Shift Comments and General Information"
-            rows={5}
-            cols={60}
-            inputValues={inputValues}
-            handleChange={handleChange}
-          />
+
           <section>
             <button className="btn btn-primary btn-sm" onClick={testSubmit}>
               Submit

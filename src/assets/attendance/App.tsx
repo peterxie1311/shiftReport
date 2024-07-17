@@ -4,15 +4,14 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Witron from "../witron";
-import SignatureUpdater from "../dateCheck";
-//import SideBar from "./assets/sideBar";
-import LargeInput from "../largeInput";
-import BoxToolTip from "../BoxTooltip";
-import Tablemaker from "../Tablemaker";
-import Dropdown from "../dropdown";
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+interface CustomDateChangeEvent {
+  target: {
+    name: string;
+    value: string;
+  };
+}
 
 const App: React.FC = () => {
   // to get the signature at the bottom
@@ -40,9 +39,23 @@ const App: React.FC = () => {
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
 
   const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = event.target;
+    setInputValues((prevValues) => {
+      const newValues = {
+        ...prevValues,
+        [name]: value,
+      };
+      return newValues;
+    });
+  };
+
+  const handleDatechange = (event: CustomDateChangeEvent) => {
+    const { name, value } = event.target;
+
     setInputValues((prevValues) => {
       const newValues = {
         ...prevValues,
@@ -66,15 +79,7 @@ const App: React.FC = () => {
       </header>
       <main>
         <div className="main-content">
-          <section className="workspace">
-            <BoxToolTip
-              title=""
-              inputNum={[]}
-              inputString={allocations}
-              inputValues={inputValues}
-              handleChange={handleChange}
-            />
-          </section>
+          <section className="workspace"></section>
         </div>
       </main>
     </>

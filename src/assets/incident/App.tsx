@@ -3,15 +3,20 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Witron from "../witron";
-import SignatureUpdater from "../dateCheck";
 import LargeInput from "../largeInput";
 import BoxToolTip from "../BoxTooltip";
-import Tablemaker from "../Tablemaker";
-import Dropdown from "../dropdown";
+import Dateselector from "../BoxTooltipdate";
 import axios from "axios";
+/*interface CustomDateChangeEvent {
+  target: {
+    name: string;
+    value: string;
+  };
+}*/
 
 const App: React.FC = () => {
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
+  let responseData: string = "failed";
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -21,6 +26,74 @@ const App: React.FC = () => {
       ...prevValues,
       [name]: value,
     }));
+
+    console.log(inputValues);
+  };
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  });
+
+  const inputArray = Object.keys(inputValues).map((key) => ({
+    name: key,
+    value: inputValues[key], // using this for the database file
+  }));
+
+  const downloadEmailDraft = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8080/api/download_email_draft",
+        {
+          params: {
+            data: Object.keys(inputValues).map((key) => ({
+              name: key,
+              value: inputValues[key], // grabbing final values
+            })),
+          },
+          responseType: "blob", // Expecting blob data
+        }
+      );
+
+      // Create a Blob object from the response data
+      const blob = new Blob([response.data]);
+
+      // Create a URL for the Blob object
+      const url = window.URL.createObjectURL(blob);
+
+      // Create an <a> element to trigger the download
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${formattedDate}${inputValues["Shift"]}.msg`; // Adjust filename as needed
+      document.body.appendChild(a);
+      a.click(); // Simulate click
+      document.body.removeChild(a);
+
+      // Clean up by revoking the URL object
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const postData = () => {
+    inputArray.push({ name: "Report type", value: "Incident" });
+    axios
+      .post<{ message: string }>("http://127.0.0.1:8080/api/data", inputArray)
+      .then((response) => {
+        responseData = response.data.message;
+
+        if (responseData === "success") {
+          downloadEmailDraft();
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   useEffect(() => {
@@ -37,42 +110,40 @@ const App: React.FC = () => {
   }, []);
 
   const stops: string[][] = [
-    ["Partial Stop"],
-    ["Full Stop"],
-    ["Partial Inbound"],
-    ["Partial Depal"],
-    ["Partial COM"],
-    ["Partial Outbound"],
-    ["Partial CPS"],
-    ["Partial AIO"],
-    ["Partial ALP"],
-    ["Full Inbound"],
-    ["Full Depal"],
-    ["Full COM"],
-    ["Full Outbound"],
-    ["Full CPS"],
-    ["Full AIO"],
-    ["Full ALP"],
+    ["Partial Stop", "number", ""],
+    ["Full Stop", "number", ""],
+    ["Partial Inbound", "number", ""],
+    ["Full Inbound", "number", ""],
+    ["Partial Depal", "number", ""],
+    ["Full Depal", "number", ""],
+    ["Partial COM", "number", ""],
+    ["Full COM", "number", ""],
+    ["Partial Outbound", "number", ""],
+    ["Full Outbound", "number", ""],
+    ["Partial CPS", "number", ""],
+    ["Full CPS", "number", ""],
+    ["Partial AIO", "number", ""],
+    ["Full AIO", "number", ""],
+    ["Partial ALP", "number", ""],
+    ["Full ALP", "number", ""],
   ];
 
   const headers: string[][] = [
-    ["Site", ""],
-    ["Department", ""],
-    ["Document"],
-    ["Date"],
-    ["Shift"],
-    ["Time"],
+    ["Date", "date", "What was the date"],
+    ["Shift", "text", ""],
+    ["Time", "time", ""],
   ];
 
   const descriptions: string[][] = [
-    ["Sub-System"],
-    ["Area/GC"],
-    ["LAC"],
-    ["Element"],
-    ["Admin"],
-    ["Asset"],
-    ["Issue"],
+    ["Sub-System", "text", ""],
+    ["Area/GC", "text", ""],
+    ["LAC", "number", ""],
+    ["Element", "number", ""],
+    ["Admin", "text", ""],
+    ["Asset", "text", ""],
+    ["Issue", "text", ""],
   ];
+  const identifiers: string[][] = [["Product"], ["Description"], ["TU #"]];
 
   const [troubleshooting, setTroubleshooting] = useState<string[]>([
     "Step taken #1",
@@ -105,6 +176,19 @@ const App: React.FC = () => {
     ["Route Number:"],
   ]);
 
+  /*
+  const handleDatechange = (event: CustomDateChangeEvent) => {
+    const { name, value } = event.target;
+
+    setInputValues((prevValues) => {
+      const newValues = {
+        ...prevValues,
+        [name]: value,
+      };
+      return newValues;
+    });
+  };*/
+
   const addLateroute = () => {
     setLateRoutes((prevRoute) => [...prevRoute, ["Route Number:"]]);
   };
@@ -117,8 +201,6 @@ const App: React.FC = () => {
       [`Witness ${witness.length + 1}:`],
     ]);
   };
-
-  const identifiers: string[][] = [["Product"], ["Description"], ["TU #"]];
 
   return (
     <>
@@ -136,9 +218,7 @@ const App: React.FC = () => {
         <div className="main-content">
           <section>
             <BoxToolTip
-              title="Incident Details"
-              inputNum={[]}
-              inputString={headers}
+              input={headers}
               inputValues={inputValues}
               handleChange={handleChange}
             />
@@ -146,9 +226,7 @@ const App: React.FC = () => {
 
           <section>
             <BoxToolTip
-              title=""
-              inputNum={[]}
-              inputString={descriptions}
+              input={descriptions}
               inputValues={inputValues}
               handleChange={handleChange}
             />
@@ -163,10 +241,7 @@ const App: React.FC = () => {
 
             {looper.map((item, index) => (
               <BoxToolTip
-                key={index}
-                title=""
-                inputNum={[]}
-                inputString={identifiers}
+                input={identifiers}
                 inputValues={inputValues}
                 handleChange={handleChange}
               />
@@ -191,9 +266,7 @@ const App: React.FC = () => {
           </button>
 
           <BoxToolTip
-            title=""
-            inputNum={[]}
-            inputString={[["Help Desk Ticket#"], ["WiTool Number"]]}
+            input={[["Help Desk Ticket#"], ["WiTool Number"]]}
             inputValues={inputValues}
             handleChange={handleChange}
           />
@@ -207,17 +280,13 @@ const App: React.FC = () => {
           />
 
           <BoxToolTip
-            title=""
-            inputNum={stops}
-            inputString={[]}
+            input={stops}
             inputValues={inputValues}
             handleChange={handleChange}
           />
 
           <BoxToolTip
-            title=""
-            inputNum={scratched}
-            inputString={[]}
+            input={scratched}
             inputValues={inputValues}
             handleChange={handleChange}
           />
@@ -226,9 +295,7 @@ const App: React.FC = () => {
           </button>
 
           <BoxToolTip
-            title=""
-            inputNum={lateRoutes}
-            inputString={[]}
+            input={lateRoutes}
             inputValues={inputValues}
             handleChange={handleChange}
           />
@@ -237,14 +304,15 @@ const App: React.FC = () => {
           </button>
 
           <BoxToolTip
-            title=""
-            inputNum={witness}
-            inputString={[]}
+            input={witness}
             inputValues={inputValues}
             handleChange={handleChange}
           />
           <button className="btn btn-primary btn-sm" onClick={addWitness}>
             Add Witness
+          </button>
+          <button className="btn btn-primary btn-sm" onClick={postData}>
+            Post Incident Report
           </button>
         </div>
       </main>

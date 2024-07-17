@@ -1,49 +1,48 @@
-#venv\scripts\activate - USE THIS TO ACTIVATE MY VIRTUAL ENVIRONMENT
-
 from flask import Flask, jsonify, request, send_file
 from datetime import datetime
 from flask_cors import CORS
-import numpy as np
 import pandas as pd
 import win32com.client as win32
 import pythoncom
-from openpyxl import Workbook, load_workbook
 import os
-import tempfile
 
 app = Flask(__name__)
-cors = CORS(app, origins='*')
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 mailTo = "coles_bri_lcc@witron.com"
 mailCc = "coles_bri_lcc@witron.com"
+
+# Define a function to get the filename based on some criteria
+def getFilename(array):
+    filename =''
+    indexRemoval = 0
+    array.append({'name': 'GenDate', 'value': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+    for index, element in enumerate(array):
+        if element['name'] == 'Report type':
+            filename = element['value']
+            
+            indexRemoval = index
+    array.pop(indexRemoval)
+    return f"{filename}.csv"
 
 @app.route("/api/data", methods=['POST'])
 def process_data():
     data = request.json
-
-    filepath = 'database.csv'
-
-    data.append({'name': 'GenDate', 'value': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
-
+    filepath = getFilename(data)
+    
     dataColumns = [i['name'] for i in data]
-   
-
-    #print('THIS IS WHERE TO CHECK')
-    #print(dataColumns)
-    #print('DATA!!!')
-    #print(data)
-
     if not os.path.isfile(filepath):
         column_names = set(d['name'] for d in data)
         data_dict = {name: [] for name in column_names}
 
         for d in data:
-            data_dict[d['name']].append(d['value'])
+            if len(data_dict[d['name']]) == 0:
+                data_dict[d['name']].append(d['value'])
 
-        print(data_dict)    
+        
 
         df = pd.DataFrame(data_dict)
         df = df.fillna(pd.NA)
-        df.to_csv(filepath, index=True)
+        df.to_csv(filepath, index=False)
     else:
         df = pd.read_csv(filepath)
         column_names = df.columns.tolist()
@@ -54,7 +53,8 @@ def process_data():
                 data.append({'name': i, 'value': 'Na'})
 
         for d in data:
-            data_dict[d['name']].append(d['value'])
+            if len(data_dict[d['name']]) == 0:
+                data_dict[d['name']].append(d['value'])
 
         dfdata = pd.DataFrame(data_dict)
         dfdata = dfdata.fillna(pd.NA)
@@ -64,12 +64,9 @@ def process_data():
 
     return jsonify({"message": "success"})
 
-
-
-@app.route('/download_email_draft')
+@app.route('/api/download_email_draft')
 def download_email_draft():
     pythoncom.CoInitialize()  # Initialize COM library
-    #print('HELLO')
 
     # Convert ImmutableMultiDict to a regular dictionary
     data = request.args.to_dict(flat=False)
@@ -87,8 +84,6 @@ def download_email_draft():
 
     # Append generation date
     data_list.append({'name': 'GenDate', 'value': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
-    #print('PRINTING DATA_LIST!!')
-   # print(data_list)
 
     # Convert list of dictionaries to DataFrame
     data_dict = {d['name']: [] for d in data_list}
@@ -99,16 +94,14 @@ def download_email_draft():
 
     # Use the DataFrame to create email draft
     html_table = df.to_html(index=False)
-    #print(html_table)
 
-    dfTable=''
-    for i,r in df.iterrows():
+    dfTable = ''
+    for i, r in df.iterrows():
         for col_name, value in r.items():
             dfTable += f"<tr>\n"
             dfTable += f"<td>{col_name}</td>\n"
             dfTable += f"<td>{value}</td>\n"
             dfTable += f"</tr>"
-           # print(f"Column: {col_name}, Value: {value}")
 
     table = f"""
             <html>
@@ -160,9 +153,6 @@ def download_email_draft():
     """
     
     # Print the HTML content to ensure it's well-formed
-    print(table)
-
-
 
     try:
         # Create an instance of the Outlook application
@@ -179,14 +169,13 @@ def download_email_draft():
         mail.To = mailTo
         mail.Cc = mailCc
 
-
         # Specify the directory where you want to save the temporary file
         custom_dir = 'C:\\Users\\pxie\\Desktop\\shiftreport\\api'  # Change this to your desired directory
         if not os.path.exists(custom_dir):
             os.makedirs(custom_dir)
 
         # Save the mail item as a draft in the specified directory
-        temp_file_path = os.path.join(custom_dir, 'email_draf123t.msg')  # Changed to .msg format
+        temp_file_path = os.path.join(custom_dir, 'email_draft.msg')  # Changed to .msg format
         try:
             mail.SaveAs(temp_file_path, 3)  # Save as .msg file
 

@@ -4,31 +4,27 @@ import "bootstrap/dist/css/bootstrap.min.css";
 interface BoxProps {
   input: string[][];
   inputValues: { [key: string]: string };
-  handleChange: (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
 }
 
-const BoxTooltip: FC<BoxProps> = ({ input, inputValues, handleChange }) => {
+const BoxTooltiplabel: FC<BoxProps> = ({ input, inputValues }) => {
   function createBlock(array: string[]): JSX.Element {
     return (
       <article className="container" key={array[0]}>
         <label htmlFor={array[0]}>{array[0]}</label>
-        <input
+        <label
           id={array[0]}
-          type={array[1]}
-          onChange={handleChange}
-          name={array[0]}
-          value={inputValues[array[0]] || ""}
-        />
-
+          style={{
+            margin: ".3em",
+          }}
+        >
+          {inputValues[array[0]]}
+        </label>
         <span className="dotTooltip">
           ?<div className="tooltip">{array[2]}</div>
         </span>
       </article>
     );
   }
-
   return (
     <div className="container entryField">
       {input.map((array: string[]) => createBlock(array))}
@@ -36,4 +32,4 @@ const BoxTooltip: FC<BoxProps> = ({ input, inputValues, handleChange }) => {
   );
 };
 
-export default BoxTooltip;
+export default BoxTooltiplabel;
