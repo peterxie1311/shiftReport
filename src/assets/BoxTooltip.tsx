@@ -12,8 +12,10 @@ interface BoxProps {
 const BoxTooltip: FC<BoxProps> = ({ input, inputValues, handleChange }) => {
   function createBlock(array: string[]): JSX.Element {
     return (
-      <article className="container" key={array[0]}>
-        <label htmlFor={array[0]}>{array[0]}</label>
+      <article className="container boxtool" key={array[0]}>
+        <label htmlFor={array[0]} style={{ width: "20em" }}>
+          {array[0] + ":"}
+        </label>
         <input
           id={array[0]}
           type={array[1]}
@@ -30,7 +32,7 @@ const BoxTooltip: FC<BoxProps> = ({ input, inputValues, handleChange }) => {
   }
 
   return (
-    <div className="container entryField">
+    <div className="container entryField ">
       {input.map((array: string[]) => createBlock(array))}
     </div>
   );

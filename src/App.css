@@ -13,9 +13,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
-  
-
 p {
   color: white;
 }
@@ -64,18 +61,51 @@ p {
   margin: 0.5em;
 }
 
-.entryField > article {
+.entryField > .boxtool {
   display: grid;
-  width: 28em; /* Adjusted */
+  width: 28em;
   grid-template-columns: 15em 10em 3em;
   background-color: rgb(122, 122, 122);
   margin: 0.5em;
   border-radius: 0.2em;
   align-items: center;
-  box-shadow: 0.2em 0.2em 0.6em rgba(0, 0, 0, 0.2); /* Adjusted */
+  box-shadow: 0.2em 0.2em 0.6em rgba(0, 0, 0, 0.2);
 }
 
-.entryField > article > input {
+.entryField > .multiselect {
+  /* aiden poo */
+  display: grid;
+  /* width: auto; */
+  grid-template-columns: 20em 5em 6em 8em 11em 10em 12em 5em auto;
+  background-color: rgb(122, 122, 122);
+  margin: 0.5em;
+  border-radius: 0.2em;
+  align-items: center;
+  box-shadow: 0.2em 0.2em 0.6em rgba(0, 0, 0, 0.2);
+}
+.entryField > .label {
+  display: flex;
+  width: auto;
+  grid-template-columns: 15em 15em 15em 15em 15em 15em;
+  background-color: rgb(122, 122, 122);
+  margin: 0.5em;
+  border-radius: 0.2em;
+  align-items: center;
+  box-shadow: 0.2em 0.2em 0.6em rgba(0, 0, 0, 0.2);
+}
+.entryField > .head {
+  display: flex;
+  /* width: auto; */
+  grid-template-columns: auto;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  background-color: rgb(122, 122, 122);
+  margin: 0.5em;
+  border-radius: 0.2em;
+  align-items: center;
+  box-shadow: 0.2em 0.2em 0.6em rgba(0, 0, 0, 0.2);
+}
+*/ .entryField > article > input {
   margin: 0.1em;
   border-radius: 0.2em;
 }
@@ -86,14 +116,6 @@ main {
   width: 100%;
   min-height: 89vh;
   background-image: linear-gradient(to bottom, rgb(0, 51, 75), rgb(30, 38, 43));
-}
-
-.sidebar {
-  background-color: rgb(59, 59, 59);
-  padding: 1em;
-  width: 15em; /* Adjusted */
-  min-width: 12.5em; /* Adjusted */
-  border-right: 0.1em solid rgb(80, 80, 80); /* Adjusted */
 }
 
 .sidebarList li a:hover {
@@ -118,11 +140,9 @@ header {
 }
 
 .main-content {
-  
   margin: auto; /* Center horizontally */
   /* Additional styles as needed */
 }
-
 
 .workspace {
   padding: 1em;

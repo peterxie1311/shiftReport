@@ -1,11 +1,11 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
-import "./App.css";
+import "../../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Witron from "../witron";
 import LargeInput from "../largeInput";
 import BoxToolTip from "../BoxTooltip";
-import Dateselector from "../BoxTooltipdate";
+import api from "../api";
 import axios from "axios";
 /*interface CustomDateChangeEvent {
   target: {
@@ -44,41 +44,41 @@ const App: React.FC = () => {
     value: inputValues[key], // using this for the database file
   }));
 
-  const downloadEmailDraft = async () => {
-    try {
-      const response = await axios.get(
-        "http://127.0.0.1:8080/api/download_email_draft",
-        {
-          params: {
-            data: Object.keys(inputValues).map((key) => ({
-              name: key,
-              value: inputValues[key], // grabbing final values
-            })),
-          },
-          responseType: "blob", // Expecting blob data
-        }
-      );
+  // const downloadEmailDraft = async () => {
+  // //   try {
+  // //     const response = await axios.get(
+  // //       "http://127.0.0.1:8080/api/download_email_draft",
+  // //       {
+  // //         params: {
+  // //           data: Object.keys(inputValues).map((key) => ({
+  // //             name: key,
+  // //             value: inputValues[key], // grabbing final values
+  // //           })),
+  // //         },
+  // //         responseType: "blob", // Expecting blob data
+  // //       }
+  // //     );
 
-      // Create a Blob object from the response data
-      const blob = new Blob([response.data]);
+  // //     // Create a Blob object from the response data
+  // //     const blob = new Blob([response.data]);
 
-      // Create a URL for the Blob object
-      const url = window.URL.createObjectURL(blob);
+  // //     // Create a URL for the Blob object
+  // //     const url = window.URL.createObjectURL(blob);
 
-      // Create an <a> element to trigger the download
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${formattedDate}${inputValues["Shift"]}.msg`; // Adjust filename as needed
-      document.body.appendChild(a);
-      a.click(); // Simulate click
-      document.body.removeChild(a);
+  // //     // Create an <a> element to trigger the download
+  // //     const a = document.createElement("a");
+  // //     a.href = url;
+  // //     a.download = `${formattedDate}${inputValues["Shift"]}.msg`; // Adjust filename as needed
+  // //     document.body.appendChild(a);
+  // //     a.click(); // Simulate click
+  // //     document.body.removeChild(a);
 
-      // Clean up by revoking the URL object
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  // //     // Clean up by revoking the URL object
+  // //     window.URL.revokeObjectURL(url);
+  // //   } catch (error) {
+  // //     console.error("Error:", error);
+  // //   }
+  // // };
 
   const postData = () => {
     inputArray.push({ name: "Report type", value: "Incident" });
@@ -88,7 +88,7 @@ const App: React.FC = () => {
         responseData = response.data.message;
 
         if (responseData === "success") {
-          downloadEmailDraft();
+          api.downloadEmailDraftincident(inputValues);
         }
       })
       .catch((error) => {

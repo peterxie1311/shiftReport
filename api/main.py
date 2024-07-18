@@ -10,6 +10,7 @@ app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 mailTo = "coles_bri_lcc@witron.com"
 mailCc = "coles_bri_lcc@witron.com"
+namesList="nameslist.csv"
 
 # Define a function to get the filename based on some criteria
 def getFilename(array):
@@ -64,7 +65,15 @@ def process_data():
 
     return jsonify({"message": "success"})
 
-@app.route('/api/download_email_draft')
+@app.route('/api/getNames',methods=['GET'])
+def getNames():
+    df = pd.read_csv(namesList)
+    json_data = df.to_json(orient='records')
+    return jsonify(json_data)
+
+
+
+@app.route('/api/download_email_draft',methods=['GET'])
 def download_email_draft():
     pythoncom.CoInitialize()  # Initialize COM library
 
