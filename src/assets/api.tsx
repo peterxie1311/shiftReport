@@ -65,7 +65,7 @@ const downloadEmailDraftincident = async (inputValues: {
 }) => {
   try {
     const response = await axios.get(
-      "http://192.168.4.74:8080/api/download_email_draft",
+      "http://10.137.223.232:8080/api/download_email_draft",
       {
         params: {
           data: Object.keys(inputValues).map((key) => ({
@@ -97,29 +97,63 @@ const downloadEmailDraftincident = async (inputValues: {
     console.error("Error:", error);
   }
 };
+
+export interface Person {
+  Name: string;
+  Position: string;
+  Crew: string;
+  Shift: string;
+  Allocation: string;
+  Event: string;
+  Reason: string;
+  Commit: string;
+  Article: string;
+}
+
+//---------------------------Find person in an array --------------------------
+function findPerson(name: String, array: Person[]): Person {
+  const emptyPerson: Person = {
+    Name: "",
+    Position: "",
+    Crew: "",
+    Shift: "",
+    Allocation: "",
+    Event: "",
+    Reason: "",
+    Commit: "",
+    Article: "",
+  };
+
+  const foundPerson = array.find((person) => person.Name === name);
+  return foundPerson || emptyPerson;
+}
+
 //------------------------------ to fetch employees -----------------------------
-async function getNames(): Promise<{ [key: string]: string }> {
-  const array: { [key: string]: string } = {};
+async function getNames(): Promise<Person[]> {
   try {
     const response = await axios.get<string>(
-      "http://192.168.4.74:8080/api/getNames"
+      "http://10.137.223.232:8080/api/getNames"
     );
-    // Map each object in the response data to the Person interface
-    JSON.parse(response.data).map((item: any) => [
-      (array[item.Name + ":Name"] = item.Name),
-      (array[item.Name + ":Position"] = item.Position),
-      (array[item.Name + ":Crew"] = item.Crew),
-      (array[item.Name + ":Shift"] = item.Shift),
-      (array[item.Name + ":Allocation"] = item.Allocation),
-      (array[item.Name + ":Event"] = item.Event),
-      (array[item.Name + ":Reason"] = item.Reason),
-      (array[item.Name + ":Commit"] = item.Commit),
-    ]);
+
+    // Assuming response.data is a JSON string that needs parsing
+    const data = JSON.parse(response.data);
+    // Map each object in the parsed data to the Person interface
+    const array: Person[] = data.map((item: any) => ({
+      Name: item.Name,
+      Position: item.Position,
+      Crew: item.Crew,
+      Shift: item.Shift,
+      Allocation: item.Allocation,
+      Event: item.Event,
+      Reason: item.Reason,
+      Commit: item.Commit,
+      Article: "",
+    }));
 
     return array;
   } catch (error) {
     console.error("Error fetching data:", error);
-    return {}; // Return an empty array if there's an error
+    return []; // Return an empty array if there's an error
   }
 }
 
@@ -147,7 +181,7 @@ const downloadEmailDraft = async (
 ) => {
   try {
     const response = await axios.get(
-      "http://192.168.4.74:8080/api/download_email_draft",
+      "http://10.137.223.232:8080/api/download_email_draft",
       {
         params: {
           data: Object.keys(inputValues).map((key) => ({
@@ -260,4 +294,5 @@ export default {
   handleChange,
   getNames,
   getValuesWithKeyNameSubstring,
+  findPerson,
 };

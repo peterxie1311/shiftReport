@@ -1,3 +1,4 @@
+#shiftReport\api\venv\Scripts\activate
 from flask import Flask, jsonify, request, send_file
 from datetime import datetime
 from flask_cors import CORS

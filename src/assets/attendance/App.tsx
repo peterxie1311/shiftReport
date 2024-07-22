@@ -4,8 +4,8 @@ import "../../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Witron from "../witron";
-import api from "../api";
-import BoxTooltipmulti from "../BoxTooltipmulti";
+import api, { Person } from "../api";
+import BoxTooltipmulti from "../BoxTooltipdropdown1";
 import BoxTooltiplabel from "../BoxTooltiplabel";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -25,9 +25,8 @@ const App: React.FC = () => {
 
   //---------------------------Constants---------------------------------------------------------------
 
-  const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
-
   const event: string[] = [
+    "Event",
     "Absence",
     "Lateness",
     "Early Depart",
@@ -38,6 +37,7 @@ const App: React.FC = () => {
     "Training",
   ];
   const reason: string[] = [
+    "Reason",
     "Sick / NWR Injury",
     "Work-Related Injury",
     "Bereavement",
@@ -62,6 +62,7 @@ const App: React.FC = () => {
     "Other",
   ];
   const allocation: string[] = [
+    "Allocation",
     "AIO",
     "COMS",
     "Defoil",
@@ -83,19 +84,54 @@ const App: React.FC = () => {
     "Other",
     "Absence",
   ];
-  const shift: string[] = ["Morning", "Evening", "Night"];
-  const role: string[] = ["EM", "OM", "LCC", "MTL", "2nd PTM", "PARTS", "PTM"];
-  const crew: string[] = ["Crew A", "Crew B", "Crew C", "PM", "Night"];
-  const commitFlag: string[] = ["Yes", "No"];
+  const shift: string[] = ["Shift", "Morning", "Evening", "Night"];
+  const role: string[] = [
+    "Position",
+    "EM",
+    "OM",
+    "LCC",
+    "MTL",
+    "2nd PTM",
+    "PARTS",
+    "PTM",
+  ];
+  const crew: string[] = ["Crew", "Crew A", "Crew B", "Crew C", "PM", "Night"];
+  const commitFlag: string[] = ["Commit", "Yes", "No"];
+
+  const emptyPerson: Person = {
+    Name: "",
+    Position: "",
+    Crew: "",
+    Shift: "",
+    Allocation: "",
+    Event: "",
+    Reason: "",
+    Commit: "",
+    Article: "None",
+  };
+  const filterPerson: Person = {
+    Name: "Filter",
+    Position: role[0],
+    Crew: crew[0],
+    Shift: shift[0],
+    Allocation: allocation[0],
+    Event: event[0],
+    Reason: reason[0],
+    Commit: commitFlag[0],
+    Article: "",
+  };
+
+  const [filterValue, setfilterValues] = useState<Person[]>([filterPerson]);
+
+  const [inputValues, setInputValues] = useState<Person[]>([emptyPerson]);
 
   async function fetch() {
     api.getNames().then((data) => {
       setInputValues(data);
     });
-    console.log(inputValues);
   }
   useEffect(() => {
-    if (Object.keys(inputValues).length === 0) {
+    if (Object.keys(inputValues).length === 1) {
       fetch(); // Fetch data only if inputValues is empty
     }
   }, []);
@@ -109,10 +145,7 @@ const App: React.FC = () => {
     reason,
     commitFlag,
   ];
-  const nameandtool: string[][] = api.getValuesWithKeyNameSubstring(
-    inputValues,
-    ":Name"
-  );
+
   const columns: string[][] = [
     ["Name"],
     ["Position"],
@@ -124,6 +157,59 @@ const App: React.FC = () => {
     ["Commit Flag"],
   ];
 
+  const testSubmit = () => {};
+
+  function handleFilter(
+    person: Person,
+    inputValues: Person[],
+    setInputValues: React.Dispatch<React.SetStateAction<Person[]>>
+  ): void {
+    if (person.Name === "Filter") {
+      setInputValues((prevValues) =>
+        prevValues.map((person) => ({
+          ...person,
+          Article: "", // Set the Article field to an empty string
+        }))
+      );
+
+      for (const key of Object.keys(person)) {
+        const value = person[key as keyof typeof person];
+        if (key !== value) {
+          setInputValues((prevValues) =>
+            prevValues.map((personMap) => {
+              // Determine the value for the `Article` field
+              let articleValue = "";
+
+              for (const key1 of Object.keys(personMap)) {
+                if (key1 === "Name") {
+                  continue; // Skip the "Name" key
+                }
+
+                if (
+                  personMap[key1 as keyof Person] !==
+                  person[key1 as keyof Person]
+                ) {
+                  if (
+                    person[key1 as keyof Person] !== key1 &&
+                    key1 !== "Article"
+                  ) {
+                    //console.log(key1);
+                    articleValue = "None"; // Set to "None" if values differ
+                    break; // Exit the loop once a difference is found
+                  }
+                }
+              }
+              return {
+                ...personMap,
+                Article: articleValue, // Apply the determined `Article` value
+              };
+            })
+          );
+        }
+      }
+    }
+  }
+
   //----------------------------------------------------Handle Change -----------------------------------------------------
   const handleChange = (
     event: ChangeEvent<
@@ -131,14 +217,37 @@ const App: React.FC = () => {
     >
   ) => {
     const { name, value } = event.target;
-    setInputValues((prevValues) => {
-      const newValues = {
-        ...prevValues,
-        [name]: value,
-      };
-      console.log(newValues);
-      return newValues;
-    });
+    const personName = name.split(":")[0];
+    const personField = name.split(":")[1];
+    const combinedValues = [...filterValue, ...inputValues];
+    // const person: Person = api.findPerson(personName, combinedValues);
+
+    const field = personField as keyof Person;
+
+    //const key = person[personField as keyof Person];
+
+    const newValues = {
+      [field]: value,
+    };
+
+    if (personName === "Filter") {
+      // Update filter values and then handle the filtering
+      setfilterValues((prevValues) => {
+        const updatedFilterValues = prevValues.map((person) =>
+          person.Name === personName ? { ...person, ...newValues } : person
+        );
+
+        handleFilter(updatedFilterValues[0], inputValues, setInputValues);
+
+        return updatedFilterValues;
+      });
+    } else {
+      setInputValues((prevValues) =>
+        prevValues.map((person) =>
+          person.Name === personName ? { ...person, ...newValues } : person
+        )
+      );
+    }
   };
 
   return (
@@ -155,24 +264,41 @@ const App: React.FC = () => {
       </header>
       <main>
         <div className="main-content">
-          <BoxTooltiplabel
+          {/* <BoxTooltiplabel
             input={columns}
             inputValues={{}}
             articleClass="container label"
-          />
-          <BoxTooltipmulti
-            articleClassname="container multiselect"
-            namesandtool={nameandtool}
-            columns={columns.slice(1)}
-            dropDowns={dropdowns}
-            inputValues={inputValues}
-            handleChange={handleChange}
-          />
-          <BoxTooltiplabel
+          /> */}
+          <div className="container entryField">
+            {filterValue.map((person, index) => (
+              <BoxTooltipmulti
+                key={index} // Ensure each element has a unique key
+                person={person} // Pass the current person from the array
+                dropDowns={dropdowns}
+                handleChange={handleChange}
+              />
+            ))}
+          </div>
+
+          <div className="container entryField">
+            {inputValues.map((person, index) => (
+              <BoxTooltipmulti
+                key={index} // Ensure each element has a unique key
+                person={person} // Pass the current person from the array
+                dropDowns={dropdowns}
+                handleChange={handleChange}
+              />
+            ))}
+          </div>
+
+          {/* <BoxTooltiplabel
             input={[["Over Time"]]}
             inputValues={{}}
             articleClass="container head"
-          />
+          /> */}
+          <button className="btn btn-primary btn-sm" onClick={testSubmit}>
+            Submit
+          </button>
 
           <section className="workspace"></section>
         </div>

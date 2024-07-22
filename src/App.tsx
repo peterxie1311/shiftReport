@@ -8,7 +8,7 @@ import LargeInput from "./assets/largeInput";
 import BoxToolTip from "./assets/BoxTooltip";
 import BoxTooltiplabel from "./assets/BoxTooltiplabel";
 import Tablemaker from "./assets/Tablemaker";
-import api from "./assets/api";
+import api, { Person } from "./assets/api";
 import Dropdown from "./assets/dropdown";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -200,7 +200,7 @@ const App: React.FC = () => {
       inputArray.push({ name: "Report type", value: "Shift" });
       axios
         .post<{ message: string }>(
-          "http://192.168.4.74:8080/api/data",
+          "http://10.137.223.232:8080/api/data",
           inputArray
         )
         .then((response) => {

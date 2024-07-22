@@ -94,9 +94,9 @@ p {
   box-shadow: 0.2em 0.2em 0.6em rgba(0, 0, 0, 0.2);
 }
 .entryField > .head {
-  display: flex;
+  display: grid;
   /* width: auto; */
-  grid-template-columns: auto;
+  grid-template-columns: 12em 5em 5em 5em 10em 6em 8em 5em auto;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
   background-color: rgb(122, 122, 122);
