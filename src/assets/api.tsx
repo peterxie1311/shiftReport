@@ -10,6 +10,10 @@ const formattedDate = currentDate.toLocaleDateString(undefined, {
   minute: "numeric",
   second: "numeric",
 });
+export interface interfaceObject {
+  name: string;
+  value: string; // Use `string` instead of `any` if value is always a string
+}
 
 function getnotFilled2d(
   fields: string[][],
@@ -60,6 +64,26 @@ function getKPI(
   return kpi;
 }
 
+async function postModified(
+  inputArray: any[],
+  postDirectory: string,
+  filename: string,
+  crew?: string
+) {
+  try {
+    const response = await axios.post<{ message: string }>(
+      `http://10.137.223.232:8080/${postDirectory}`,
+      { array: inputArray, filename: filename, crew: crew }
+    );
+    const responseData = response.data.message;
+    if (responseData === "success") {
+      console.log("Done");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
 const downloadEmailDraftincident = async (inputValues: {
   [key: string]: string;
 }) => {
@@ -98,6 +122,43 @@ const downloadEmailDraftincident = async (inputValues: {
   }
 };
 
+async function post(
+  postDirectory: string,
+  inputArray: interfaceObject[],
+  email: boolean,
+  inputValues: { [key: string]: string },
+  columns: string[],
+  columnValue: string[],
+  rowsDefault: string[],
+  rows: string[]
+): Promise<string> {
+  try {
+    const response = await axios.post<{ message: string }>(
+      `http://10.137.223.232:8080/${postDirectory}`,
+      inputArray
+    );
+
+    const responseData = response.data.message;
+
+    if (responseData === "success") {
+      if (email === true) {
+        await downloadEmailDraft(
+          inputValues,
+          columns,
+          columnValue,
+          rowsDefault,
+          rows
+        );
+      }
+    }
+
+    return responseData; // Return the response message
+  } catch (error) {
+    console.error("Error:", error);
+    return "Error"; // Return a default value in case of an error
+  }
+}
+
 export interface Person {
   Name: string;
   Position: string;
@@ -129,10 +190,15 @@ function findPerson(name: String, array: Person[]): Person {
 }
 
 //------------------------------ to fetch employees -----------------------------
-async function getNames(): Promise<Person[]> {
+async function getNames(filename: string): Promise<Person[]> {
   try {
     const response = await axios.get<string>(
-      "http://10.137.223.232:8080/api/getNames"
+      "http://10.137.223.232:8080/api/getNames",
+      {
+        params: {
+          data: filename,
+        },
+      }
     );
 
     // Assuming response.data is a JSON string that needs parsing
@@ -214,7 +280,7 @@ const downloadEmailDraft = async (
   }
 };
 
-//------------------- Handling change event
+//------------------- Handling change event--------------------------------------------------------
 
 const handleChange = (
   event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -295,4 +361,6 @@ export default {
   getNames,
   getValuesWithKeyNameSubstring,
   findPerson,
+  post,
+  postModified,
 };

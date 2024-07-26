@@ -1,4 +1,4 @@
-#shiftReport\api\venv\Scripts\activate
+#C:\Users\pxie\Desktop\shiftReport\api\venv\Scripts\activate
 from flask import Flask, jsonify, request, send_file
 from datetime import datetime
 from flask_cors import CORS
@@ -66,9 +66,57 @@ def process_data():
 
     return jsonify({"message": "success"})
 
+
+
+
+@app.route("/api/processNames", methods=['POST'])
+def process_Names():
+    print("working")
+    data = request.json
+
+    array = data.get('array', [])
+    filename = data.get('filename', '')
+
+    # Process the array and filename as needed
+    print("Received array:", array)
+    print("Received filename:", filename)
+
+    df = pd.DataFrame(array)
+    
+
+    df.to_csv(filename, index=False)
+    return jsonify({"message": "success"})
+
+@app.route("/api/appendDB", methods=['POST'])
+def appendDf():
+    data = request.json
+    gendate = {'Gen Date':  datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+    array = data.get('array', [])
+    filename = data.get('filename', '')
+    crew = data.get('crew','')
+    workedCrew ={'Worked on Crew':  crew}
+    print(crew)
+    print(array)
+    for i in array:
+        i.update(gendate)
+        i.update(workedCrew)
+
+    file=pd.read_csv(filename)
+    append = pd.DataFrame(array)
+    df = pd.concat([file, append], ignore_index=True)
+    df.to_csv(filename, index=False)
+
+    return jsonify({"message": "success"})
+
+
+#PLEASE START USING GETNAMES!
+
 @app.route('/api/getNames',methods=['GET'])
 def getNames():
-    df = pd.read_csv(namesList)
+    data = request.args.to_dict(flat=False)
+    filename = data['data'][0]
+    print(filename)
+    df = pd.read_csv(filename)
     json_data = df.to_json(orient='records')
     return jsonify(json_data)
 

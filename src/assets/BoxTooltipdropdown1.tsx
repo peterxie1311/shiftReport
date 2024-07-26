@@ -53,6 +53,10 @@ const BoxTooltipmulti: FC<BoxProps> = ({ person, dropDowns, handleChange }) => {
         {dropdowns.map((array: string[], index: number) =>
           createDropdown(array, person, index)
         )}
+
+        <span className="dotTooltip">
+          ?<div className="tooltip">{person.Name}</div>
+        </span>
       </article>
     );
   }

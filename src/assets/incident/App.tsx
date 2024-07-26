@@ -7,12 +7,6 @@ import LargeInput from "../largeInput";
 import BoxToolTip from "../BoxTooltip";
 import api from "../api";
 import axios from "axios";
-/*interface CustomDateChangeEvent {
-  target: {
-    name: string;
-    value: string;
-  };
-}*/
 
 const App: React.FC = () => {
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
@@ -83,7 +77,10 @@ const App: React.FC = () => {
   const postData = () => {
     inputArray.push({ name: "Report type", value: "Incident" });
     axios
-      .post<{ message: string }>("http://127.0.0.1:8080/api/data", inputArray)
+      .post<{ message: string }>(
+        "http://10.137.223.232:8080/api/data",
+        inputArray
+      )
       .then((response) => {
         responseData = response.data.message;
 

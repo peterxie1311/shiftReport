@@ -8,7 +8,7 @@ import LargeInput from "./assets/largeInput";
 import BoxToolTip from "./assets/BoxTooltip";
 import BoxTooltiplabel from "./assets/BoxTooltiplabel";
 import Tablemaker from "./assets/Tablemaker";
-import api, { Person } from "./assets/api";
+import api, { Person, interfaceObject } from "./assets/api";
 import Dropdown from "./assets/dropdown";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -140,9 +140,9 @@ const App: React.FC = () => {
     value: columnValue[index],
   }));
 
-  const inputArray = Object.keys(inputValues).map((key) => ({
-    name: key,
-    value: inputValues[key], // using this for the database file
+  const inputArray: interfaceObject[] = Object.keys(inputValues).map((key) => ({
+    name: key as string,
+    value: inputValues[key] as string, // using this for the database file
   }));
 
   //-------------- Setting Rows ----------------------------------------------------------------------------------------
@@ -198,27 +198,16 @@ const App: React.FC = () => {
     ) {
       inputArray.push(...kpiValues);
       inputArray.push({ name: "Report type", value: "Shift" });
-      axios
-        .post<{ message: string }>(
-          "http://10.137.223.232:8080/api/data",
-          inputArray
-        )
-        .then((response) => {
-          responseData = response.data.message;
-
-          if (responseData === "success") {
-            api.downloadEmailDraft(
-              inputValues,
-              columns,
-              columnValue,
-              rowsDefault,
-              rows
-            );
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      api.post(
+        "/api/data",
+        inputArray,
+        true,
+        inputValues,
+        columns,
+        columnValue,
+        rowsDefault,
+        rows
+      );
     } else {
       alert(
         "You did not enter these values: " +

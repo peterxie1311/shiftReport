@@ -6,9 +6,10 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Witron from "../witron";
 import api, { Person } from "../api";
 import BoxTooltipmulti from "../BoxTooltipdropdown1";
-import BoxTooltiplabel from "../BoxTooltiplabel";
+import BoxTooltip from "../BoxTooltip";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import Dropdown from "../dropdown";
 
 const App: React.FC = () => {
   // to get the signature at the bottom
@@ -24,6 +25,19 @@ const App: React.FC = () => {
   }, []);
 
   //---------------------------Constants---------------------------------------------------------------
+
+  const [addPerson, setaddPerson] = useState<{ [key: string]: string }>({});
+  const [selectedCrew, selectCrew] = useState<{ [key: string]: string }>({});
+  useEffect(() => {
+    if (
+      selectedCrew["Select a Crew"] !== null &&
+      selectedCrew["Select a Crew"] !== undefined
+    ) {
+      fetch();
+      //  console.log(filterValue[0]);
+      handleFilter(filterValue[0], inputValues, setInputValues);
+    }
+  }, [selectedCrew]);
 
   const event: string[] = [
     "Event",
@@ -126,15 +140,12 @@ const App: React.FC = () => {
   const [inputValues, setInputValues] = useState<Person[]>([emptyPerson]);
 
   async function fetch() {
-    api.getNames().then((data) => {
-      setInputValues(data);
-    });
+    api
+      .getNames(`nameslist ${selectedCrew["Select a Crew"]}.csv`)
+      .then((data) => {
+        setInputValues(data);
+      });
   }
-  useEffect(() => {
-    if (Object.keys(inputValues).length === 1) {
-      fetch(); // Fetch data only if inputValues is empty
-    }
-  }, []);
 
   const dropdowns: string[][] = [
     role,
@@ -146,22 +157,9 @@ const App: React.FC = () => {
     commitFlag,
   ];
 
-  const columns: string[][] = [
-    ["Name"],
-    ["Position"],
-    ["Crew"],
-    ["Shift"],
-    ["Allocation"],
-    ["Event"],
-    ["Reason"],
-    ["Commit Flag"],
-  ];
-
-  const testSubmit = () => {};
-
   function handleFilter(
     person: Person,
-    inputValues: Person[],
+    _inputValues: Person[],
     setInputValues: React.Dispatch<React.SetStateAction<Person[]>>
   ): void {
     if (person.Name === "Filter") {
@@ -209,6 +207,52 @@ const App: React.FC = () => {
       }
     }
   }
+  function savePreview(inputarray: Person[]) {
+    api.postModified(
+      inputarray,
+      "/api/processNames",
+      `nameslist ${selectedCrew["Select a Crew"]}.csv`
+    );
+  }
+
+  function commitAllocations(array: Person[]) {
+    const commitAlloc = array.filter((person) => person.Commit === "Yes");
+    api.postModified(
+      commitAlloc,
+      "/api/appendDB",
+      "databaseAllocations.csv",
+      selectedCrew["Select a Crew"]
+    );
+
+    const clearCommit = inputValues.map((person) => ({
+      ...person,
+
+      Commit: "No",
+    }));
+    setInputValues(clearCommit);
+    savePreview(clearCommit);
+  }
+
+  function addCrew() {
+    const newPerson: Person = {
+      Name: addPerson["Name"], // Using the variable to initialize the Name property
+      Position: "",
+      Crew: "",
+      Shift: "",
+      Allocation: "",
+      Event: "",
+      Reason: "",
+      Commit: "",
+      Article: "",
+    };
+
+    setInputValues((prevValues) => [...prevValues, newPerson]);
+  }
+  function removeCrew() {
+    setInputValues((prevValues) =>
+      prevValues.filter((person) => person.Name !== addPerson["Name"])
+    );
+  }
 
   //----------------------------------------------------Handle Change -----------------------------------------------------
   const handleChange = (
@@ -219,24 +263,22 @@ const App: React.FC = () => {
     const { name, value } = event.target;
     const personName = name.split(":")[0];
     const personField = name.split(":")[1];
-    const combinedValues = [...filterValue, ...inputValues];
-    // const person: Person = api.findPerson(personName, combinedValues);
-
     const field = personField as keyof Person;
 
-    //const key = person[personField as keyof Person];
-
+    const isCommit = {
+      Commit: "Yes",
+    };
     const newValues = {
       [field]: value,
+      ...(field === "Allocation" && value != "Allocation" ? isCommit : {}), // if field is allocation and value isnt allocation then tick yes for commit :)
     };
 
     if (personName === "Filter") {
-      // Update filter values and then handle the filtering
       setfilterValues((prevValues) => {
-        const updatedFilterValues = prevValues.map((person) =>
-          person.Name === personName ? { ...person, ...newValues } : person
+        const updatedFilterValues = prevValues.map(
+          (person) =>
+            person.Name === personName ? { ...person, ...newValues } : person // if person name is = person name in event then append newValues else return the person
         );
-
         handleFilter(updatedFilterValues[0], inputValues, setInputValues);
 
         return updatedFilterValues;
@@ -244,10 +286,13 @@ const App: React.FC = () => {
     } else {
       setInputValues((prevValues) =>
         prevValues.map((person) =>
-          person.Name === personName ? { ...person, ...newValues } : person
+          person.Name === personName && person
+            ? { ...person, ...newValues }
+            : person
         )
       );
     }
+    setInputValues((p) => [...p].sort((x, y) => x.Name.localeCompare(y.Name))); // sort names everytime an input is being done
   };
 
   return (
@@ -264,12 +309,12 @@ const App: React.FC = () => {
       </header>
       <main>
         <div className="main-content">
-          {/* <BoxTooltiplabel
-            input={columns}
-            inputValues={{}}
-            articleClass="container label"
-          /> */}
-          <div className="container entryField">
+          <div
+            className="container entryField"
+            style={{
+              alignItems: "center",
+            }}
+          >
             {filterValue.map((person, index) => (
               <BoxTooltipmulti
                 key={index} // Ensure each element has a unique key
@@ -278,6 +323,16 @@ const App: React.FC = () => {
                 handleChange={handleChange}
               />
             ))}
+
+            <Dropdown
+              id={"Select a Crew"}
+              selections={["Crew A", "Crew B", "Crew C"]}
+              inputValues={selectedCrew}
+              mouseChange={api.handleDropdownItemClick(
+                "Select a Crew",
+                selectCrew
+              )}
+            />
           </div>
 
           <div className="container entryField">
@@ -290,14 +345,53 @@ const App: React.FC = () => {
               />
             ))}
           </div>
+          <BoxTooltip
+            input={[
+              [
+                "Name",
+                "text",
+                "Type The first and last name of the person you would like to add",
+              ],
+            ]}
+            inputValues={addPerson}
+            handleChange={function (
+              event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+            ): void {
+              const { name, value } = event.target;
+              setaddPerson({
+                [name]: value,
+              });
+            }}
+          />
+          <button
+            className="btn btn-primary btn-sm"
+            style={{ marginRight: "0.5em" }}
+            onClick={addCrew}
+          >
+            Add Person
+          </button>
 
-          {/* <BoxTooltiplabel
-            input={[["Over Time"]]}
-            inputValues={{}}
-            articleClass="container head"
-          /> */}
-          <button className="btn btn-primary btn-sm" onClick={testSubmit}>
-            Submit
+          <button
+            className="btn btn-primary btn-sm"
+            style={{ marginRight: "0.5em" }}
+            onClick={removeCrew}
+          >
+            Remove Person
+          </button>
+          <p></p>
+          <button
+            className="btn btn-primary btn-sm"
+            style={{ marginRight: "0.5em" }}
+            onClick={() => savePreview(inputValues)}
+          >
+            Save
+          </button>
+          <button
+            className="btn btn-primary btn-sm"
+            style={{ marginRight: "0.5em" }}
+            onClick={() => commitAllocations(inputValues)}
+          >
+            Commit Allocations
           </button>
 
           <section className="workspace"></section>
