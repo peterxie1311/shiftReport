@@ -1,6 +1,19 @@
 import axios from "axios";
 import { ChangeEvent } from "react";
 
+//------------------------INTERFACES!---------------------
+export interface Person {
+  Name: string;
+  Position: string;
+  Crew: string;
+  Shift: string;
+  Allocation: string;
+  Event: string;
+  Reason: string;
+  Commit: string;
+  Article: string;
+}
+
 const currentDate = new Date();
 const formattedDate = currentDate.toLocaleDateString(undefined, {
   year: "numeric",
@@ -65,22 +78,21 @@ function getKPI(
 }
 
 async function postModified(
-  inputArray: any[],
+  inputArray: unknown[],
   postDirectory: string,
   filename: string,
   crew?: string
 ) {
   try {
     const response = await axios.post<{ message: string }>(
-      `http://10.137.223.232:8080/${postDirectory}`,
+      `http://192.168.4.21:8080/${postDirectory}`,
       { array: inputArray, filename: filename, crew: crew }
     );
     const responseData = response.data.message;
-    if (responseData === "success") {
-      console.log("Done");
-    }
+    alert(responseData);
   } catch (error) {
-    console.error("Error:", error);
+    alert(`"Error Please screenshot and show Peter :)" ${error}`);
+    console.error(`"Error Please screenshot and show Peter :)" ${error}`);
   }
 }
 
@@ -89,7 +101,7 @@ const downloadEmailDraftincident = async (inputValues: {
 }) => {
   try {
     const response = await axios.get(
-      "http://10.137.223.232:8080/api/download_email_draft",
+      "http://192.168.4.21:8080/api/download_email_draft",
       {
         params: {
           data: Object.keys(inputValues).map((key) => ({
@@ -118,6 +130,7 @@ const downloadEmailDraftincident = async (inputValues: {
     // Clean up by revoking the URL object
     window.URL.revokeObjectURL(url);
   } catch (error) {
+    alert(`"Error Please screenshot and show Peter :)" ${error}`);
     console.error("Error:", error);
   }
 };
@@ -134,7 +147,7 @@ async function post(
 ): Promise<string> {
   try {
     const response = await axios.post<{ message: string }>(
-      `http://10.137.223.232:8080/${postDirectory}`,
+      `http://192.168.4.21:8080/${postDirectory}`,
       inputArray
     );
 
@@ -159,20 +172,8 @@ async function post(
   }
 }
 
-export interface Person {
-  Name: string;
-  Position: string;
-  Crew: string;
-  Shift: string;
-  Allocation: string;
-  Event: string;
-  Reason: string;
-  Commit: string;
-  Article: string;
-}
-
 //---------------------------Find person in an array --------------------------
-function findPerson(name: String, array: Person[]): Person {
+function findPerson(name: string, array: Person[]): Person {
   const emptyPerson: Person = {
     Name: "",
     Position: "",
@@ -189,11 +190,51 @@ function findPerson(name: String, array: Person[]): Person {
   return foundPerson || emptyPerson;
 }
 
+//----------Generic Values Getter
+
+const getValues = async (
+  filename: string,
+  setInputValues: React.Dispatch<
+    React.SetStateAction<{ [key: string]: string }>
+  >
+): Promise<void> => {
+  try {
+    const response = await axios.get<{ [key: string]: string }>(
+      "http://192.168.4.21:8080/api/getNames",
+      {
+        params: { data: filename },
+      }
+    );
+
+    const data = response.data; // Data is already parsed as JSON
+
+    // Check if data is an array and convert it if necessary
+    if (Array.isArray(data)) {
+      const transformedData = data.reduce(
+        (acc: { [key: string]: string }, item: { [key: string]: string }) => {
+          const [key] = Object.keys(item);
+          acc[key] = item[key];
+          return acc;
+        },
+        {}
+      );
+      setInputValues(transformedData);
+    } else {
+      // If data is already an object
+      console.log(data);
+      setInputValues(data);
+    }
+  } catch (error) {
+    alert(`"Error Please screenshot and show Peter :)" ${error}`);
+    console.error("Error fetching data:", error);
+  }
+};
+
 //------------------------------ to fetch employees -----------------------------
 async function getNames(filename: string): Promise<Person[]> {
   try {
     const response = await axios.get<string>(
-      "http://10.137.223.232:8080/api/getNames",
+      "http://192.168.4.21:8080/api/getNames",
       {
         params: {
           data: filename,
@@ -201,10 +242,9 @@ async function getNames(filename: string): Promise<Person[]> {
       }
     );
 
-    // Assuming response.data is a JSON string that needs parsing
     const data = JSON.parse(response.data);
-    // Map each object in the parsed data to the Person interface
-    const array: Person[] = data.map((item: any) => ({
+    const array: Person[] = data.map((item: Person) => ({
+      // ---- this was changed to definee the specific type of a person
       Name: item.Name,
       Position: item.Position,
       Crew: item.Crew,
@@ -218,6 +258,7 @@ async function getNames(filename: string): Promise<Person[]> {
 
     return array;
   } catch (error) {
+    alert(`"Error Please screenshot and show Peter :)" ${error}`);
     console.error("Error fetching data:", error);
     return []; // Return an empty array if there's an error
   }
@@ -247,7 +288,7 @@ const downloadEmailDraft = async (
 ) => {
   try {
     const response = await axios.get(
-      "http://10.137.223.232:8080/api/download_email_draft",
+      "http://192.168.4.21:8080/api/download_email_draft",
       {
         params: {
           data: Object.keys(inputValues).map((key) => ({
@@ -276,6 +317,7 @@ const downloadEmailDraft = async (
     // Clean up by revoking the URL object
     window.URL.revokeObjectURL(url);
   } catch (error) {
+    alert(`"Error Please screenshot and show Peter :)" ${error}`);
     console.error("Error:", error);
   }
 };
@@ -363,4 +405,5 @@ export default {
   findPerson,
   post,
   postModified,
+  getValues,
 };

@@ -34,6 +34,7 @@ const App: React.FC = () => {
     ["Report By", "text", "Which PTM"],
     ["Incidents", "number", "Amount of Incidents"],
   ];
+
   const calcFields = [
     ["COM Total", "number", "Sum"],
     ["Com Cases/Hour Average", "number", "Sum"],
@@ -173,7 +174,6 @@ const App: React.FC = () => {
   }
 
   //-------------------------------------------------Post Data to backend --------------------------------------------------------------------------------
-  let responseData: string = "failed";
   const postData = () => {
     inputMisc.push(["Shift", ""]);
     inputMisc.push(["Crew", ""]);
@@ -222,9 +222,32 @@ const App: React.FC = () => {
   };
 
   // --------------- test function to add more functions to the submit button will remove later -------------------
+  const convertObjectToArray = (obj: {
+    [key: string]: string;
+  }): { [key: string]: string }[] => {
+    // Wrap the object in an array
+    return [obj];
+  };
+  const saveChanges = () => {
+    const crewValue = inputValues["Crew"];
+    api.postModified(
+      convertObjectToArray(inputValues),
+      "/api/getNames",
+      `shiftReport ${crewValue}.csv`
+    );
+  };
 
+  const getLastSave = () => {
+    const crewValue = inputValues["Crew"];
+    api.getValues(`shiftReport ${crewValue}.csv`, setInputValues);
+  };
   const testSubmit = () => {
-    postData();
+    //postData
+    api.postModified(
+      convertObjectToArray(inputValues),
+      "/api/appendDB",
+      "database.csv"
+    );
   };
 
   //------------------ Handling event change of an HTML input area -------------------------------------
@@ -383,6 +406,12 @@ const App: React.FC = () => {
           <section>
             <button className="btn btn-primary btn-sm" onClick={testSubmit}>
               Submit
+            </button>
+            <button className="btn btn-primary btn-sm" onClick={saveChanges}>
+              Save Changes
+            </button>
+            <button className="btn btn-primary btn-sm" onClick={getLastSave}>
+              Get last save
             </button>
           </section>
         </div>
