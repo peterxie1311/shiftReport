@@ -169,6 +169,7 @@ async function post(
     );
 
     const responseData = response.data.message;
+    alert(responseData);
 
     if (responseData === "success") {
       if (email === true) {

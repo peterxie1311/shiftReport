@@ -251,21 +251,18 @@ const App: React.FC = () => {
   };
   const testSubmit = () => {
     //postData
-    api.postModified(
-      convertObjectToArray(inputValues),
-      "/api/appendDB",
-      "database.csv"
-    );
-    api.post(
-      "api/data",
-      inputArray,
-      true,
-      inputValues,
-      columns,
-      columnValue,
-      rowsDefault,
-      rows
-    );
+    postData();
+
+    // api.post(
+    //   "api/data",
+    //   inputArray,
+    //   true,
+    //   inputValues,
+    //   columns,
+    //   columnValue,
+    //   rowsDefault,
+    //   rows
+    // );
   };
 
   //------------------ Handling event change of an HTML input area -------------------------------------

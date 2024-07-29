@@ -1,53 +1,53 @@
 Name,Position,Crew,Shift,Allocation,Event,Reason,Commit,Article
-Abdullah Shameem,OM,Crew A,,AIO,,,No,
+Abdullah Shameem,OM,Crew A,,AIO,,,No,None
 Adam Abrahams,OM,Crew B,,AIO,,,No,None
 Adam Cassidy,OM,Crew B,,Depal,,,No,None
 Adrian Cook,OM,Crew B,,Training,,,No,None
 Alan Maddox,OM,Crew C,,AIO,,,No,None
-Alejandro Orozco,EM,Crew A,,Defoil,,,No,
+Alejandro Orozco,EM,Crew A,,Defoil,,,No,None
 Amanda Pukeroa,OM,Crew C,,COMs & TCRNs,,,No,None
 Andrew James Noble,EM,Crew B,,Absence,,,No,None
-Anthony Harbourn,OM,Crew A,,COMs & TCRNs,,,No,
+Anthony Harbourn,OM,Crew A,,COMs & TCRNs,,,No,None
 Asish (Pranesh) Kumar,OM,Crew C,,,,,No,None
-Bailey McLeod,OM,Crew A,,Absence,,,No,
+Bailey McLeod,OM,Crew A,,Absence,,,No,None
 Benedict Larbi Bram,OM,Crew B,,,,,No,None
 Benjamin Jefford,OM,Crew C,,,,,No,None
 Benjamin Robinson,MTL,Crew C,,,,,No,None
 Benjamin Vaughan,PTM,Crew B,,,,,No,None
-Billie Jo (BJ) Emery,PTM,Crew A,,Other,,,No,
-Brady Millington,PTM,Crew A,,Training,,,No,
-Brock Schoenfisch,OM,Crew A,,AIO & Outbound,,,No,
+Billie Jo (BJ) Emery,PTM,Crew A,,Other,,,No,None
+Brady Millington,PTM,Crew A,,Training,,,No,None
+Brock Schoenfisch,OM,Crew A,,AIO & Outbound,,,No,None
 Brooke Draper,EM,Crew C,,,,,No,None
 Bryce de Bruin,OM,Crew B,,,,,No,None
 Chris Chikonyora,EM,PM,,,,,No,None
 Cooper Lanson-Prebble,OM,Crew C,,,,,No,None
 Corrina Bambridge,OM,Crew C,,,,,No,None
-Craig Richards,OM,Crew A,,,,,No,
+Craig Richards,OM,Crew A,,,,,No,None
 Dahreb Jul Labtic,OM,Crew B,,,,,No,None
 Daniel Forward,MTL,Crew B,,,,,No,None
-Daniel O'Reilly,PTM,Crew A,,,,,No,
+Daniel O'Reilly,PTM,Crew A,,,,,No,None
 Daniel Schmith,OM,Crew C,,,,,No,None
 Daniel Wolff,OM,Crew B,,,,,No,None
 Dharmik Patel,OM,Crew C,,,,,No,None
 Dominic Kelekolio,OM,Crew B,,,,,No,None
 Don McEvoy,EM,Crew C,,,,,No,None
-Donny Foai,OM,Crew A,,,,,No,
-Dylan Mustey,OM,Crew A,,,,,No,
+Donny Foai,OM,Crew A,,,,,No,None
+Dylan Mustey,OM,Crew A,,,,,No,None
 Eun (Jeff) Kim,OM,Crew C,,,,,No,None
 Harrison Matthews,OM,Crew B,,,,,No,None
 Hayden Appleby,OM,Crew B,,,,,No,None
 Ian Carr,EM,Crew B,,,,,No,None
-Indiana Rose Smith,OM,Crew A,,,,,No,
+Indiana Rose Smith,OM,Crew A,,,,,No,None
 Jacob Scott,EM,Crew B,,,,,No,None
 Jake Single,2nd PTM,Crew B,,,,,No,None
-James Elford,OM,Crew A,,,,,No,
-Jamie Power,EM,Crew A,,,,,No,
+James Elford,OM,Crew A,,,,,No,None
+Jamie Power,EM,Crew A,,,,,No,None
 Jason (Kent) Flynn,EM,Crew B,,,,,No,None
 Jaydn Vaughan,OM,Crew C,,,,,No,None
-Jayson Headridge,EM,Crew A,,,,,No,
+Jayson Headridge,EM,Crew A,,,,,No,None
 John (JJ) Koti,2nd PTM,Crew B,,,,,No,None
-John Chandler,EM,Crew A,,,,,No,
-John Junge,EM,Crew A,,,,,No,
+John Chandler,EM,Crew A,,,,,No,None
+John Junge,EM,Crew A,,,,,No,None
 Jonathan Falaniko,OM,Crew B,,,,,No,None
 Jonathan Hughes,OM,Crew B,,,,,No,None
 Jordan McEvoy,EM,PM,,,,,No,None
@@ -55,7 +55,7 @@ Joshua Daly,EM,Crew C,,,,,No,None
 Joshua Harris,EM,PM,,,,,No,None
 Joshua Leisemann,EM,PM,,,,,No,None
 Joshua Thomas,OM,Crew B,,,,,No,None
-Joyce Anonuevo,OM,Crew A,,,,,No,
+Joyce Anonuevo,OM,Crew A,,,,,No,None
 June Win Lee,EM,Crew C,,,,,No,None
 Justin Taylor,EM,PM,,,,,No,None
 Kaden Toll,OM,Crew B,,,,,No,None
@@ -63,8 +63,8 @@ Kane Lovell,OM,Crew B,,,,,No,None
 Kian Alex Tiu,EM,Crew C,,,,,No,None
 Kiara Duncan,OM,Crew B,,,,,No,None
 Kitana Potaka-Hetet,OM,Crew C,,,,,No,None
-Kori Jameson,EM,Crew A,,,,,No,
-Lachlan Egan,LCC,Crew A,,,,,No,
+Kori Jameson,EM,Crew A,,,,,No,None
+Lachlan Egan,LCC,Crew A,,,,,No,None
 Lachlan Hillsley,OM,Crew C,,,,,No,None
 Liam Flecknoe,OM,Crew C,,,,,No,None
 Luke Craig,PTM,Crew C,,,,,No,None
@@ -74,47 +74,47 @@ Mark Hingst,PTM,Crew C,,,,,No,None
 Mary Tatopau,OM,Crew B,,,,,No,None
 Maryanne McEvoy,OM,Crew C,,,,,No,None
 Matthew Stephens,EM,Crew C,,,,,No,None
-Matthew Strom,MTL,Crew A,,,,,No,
+Matthew Strom,MTL,Crew A,,,,,No,None
 Michael Alloway,OM,Crew B,,,,,No,None
 Michael Henbury,EM,Crew C,,,,,No,None
 Michael Morris,EM,PM,,,,,No,None
 Mohammad Ali Lari,OM,Crew C,,,,,No,None
-Mohit Mankotia,OM,Crew A,,,,,No,
+Mohit Mankotia,OM,Crew A,,,,,No,None
 Narinder Singh,OM,Crew B,,,,,No,None
-Nicholas Horrigan,OM,Crew A,,,,,No,
+Nicholas Horrigan,OM,Crew A,,,,,No,None
 Nicholas Moeke,OM,Crew B,,,,,No,None
 Patrick Maguire,OM,Crew B,,,,,No,None
 Paul Harding,EM,PM,,,,,No,None
 Preston Emery,OM,Crew B,,,,,No,None
-Rafael Baccon,OM,Crew A,,,,,No,
+Rafael Baccon,OM,Crew A,,,,,No,None
 Raul Nunez,OM,Crew C,,,,,No,None
 Rebecca Ceolin,OM,Crew C,,,,,No,None
 Reed Kolloen,OM,Crew C,,,,,No,None
 Rex Silafaga,EM,PM,,,,,No,None
-Rhien Smith,OM,Crew A,,,,,No,
+Rhien Smith,OM,Crew A,,,,,No,None
 Robert Doughton,OM,Crew B,,,,,No,None
-Ryan Boyle,OM,Crew A,,,,,No,
+Ryan Boyle,OM,Crew A,,,,,No,None
 Ryan Flanagan,EM,Crew B,,,,,No,None
 Ryan Kjaersgaard,EM,Crew B,,,,,No,None
-Sachin Patel,EM,Crew A,,,,,No,
-Salim Ismail,OM,Crew A,,,,,No,
+Sachin Patel,EM,Crew A,,,,,No,None
+Salim Ismail,OM,Crew A,,,,,No,None
 Samuel Reinertsen,OM,Crew C,,,,,No,None
 Scott Sandford,EM,PM,,,,,No,None
-Sean Evans,OM,Crew A,,,,,No,
-Sharma Edwards,OM,Crew A,,,,,No,
-Shaun Liebermann,OM,Crew A,,,,,No,
+Sean Evans,OM,Crew A,,,,,No,None
+Sharma Edwards,OM,Crew A,,,,,No,None
+Shaun Liebermann,OM,Crew A,,,,,No,None
 Shayne Gillis,EM,Crew B,,,,,No,None
 Sheere Maitai,OM,Crew B,,,,,No,None
 Siaana (Sonny) Salu,OM,Crew C,,,,,No,None
 Simone Harris,OM,Crew C,,,,,No,None
-Stuart Holliday,OM,Crew A,,,,,No,
+Stuart Holliday,OM,Crew A,,,,,No,None
 Stuart Marley,OM,Crew C,,,,,No,None
 Sylvester Mekeli,OM,Crew C,,,,,No,None
 Theofilos Pavlos,OM,Crew C,,,,,No,None
-Thomas Banning,EM,Crew A,,,,,No,
+Thomas Banning,EM,Crew A,,,,,No,None
 Timothy O'Reilly,OM,Crew C,,,,,No,None
-Troy Winikerei,OM,Crew A,,,,,No,
-Turawaho (Tee) Hemopo,OM,Crew A,,,,,No,
+Troy Winikerei,OM,Crew A,,,,,No,None
+Turawaho (Tee) Hemopo,OM,Crew A,,,,,No,None
 Tylar-Leigh Finlay,OM,Crew B,,,,,No,None
-Vincent Verdasco Harder,OM,Crew A,,,,,No,
+Vincent Verdasco Harder,OM,Crew A,,,,,No,None
 Wayne Johnstone,EM,PM,,,,,No,None
