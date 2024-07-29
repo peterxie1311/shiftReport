@@ -29,6 +29,8 @@ const App: React.FC = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+
+  api.readFile();
   // Itialising variables ----------------------------------------------------------------------------------------
   const inputGeneric = [
     ["Report By", "text", "Which PTM"],
@@ -232,14 +234,20 @@ const App: React.FC = () => {
     const crewValue = inputValues["Crew"];
     api.postModified(
       convertObjectToArray(inputValues),
-      "/api/getNames",
+      "/api/processNames",
       `shiftReport ${crewValue}.csv`
     );
   };
 
   const getLastSave = () => {
     const crewValue = inputValues["Crew"];
-    api.getValues(`shiftReport ${crewValue}.csv`, setInputValues);
+    api.getValues(
+      `shiftReport ${crewValue}.csv`,
+      "api/getNames",
+      setInputValues
+    );
+    //  console.log("THIS IS THE INPUT ARRAY");
+    console.log(inputValues);
   };
   const testSubmit = () => {
     //postData
@@ -404,13 +412,25 @@ const App: React.FC = () => {
           </section>
 
           <section>
-            <button className="btn btn-primary btn-sm" onClick={testSubmit}>
+            <button
+              className="btn btn-primary btn-sm"
+              style={{ marginRight: "0.5em" }}
+              onClick={testSubmit}
+            >
               Submit
             </button>
-            <button className="btn btn-primary btn-sm" onClick={saveChanges}>
+            <button
+              className="btn btn-primary btn-sm"
+              style={{ marginRight: "0.5em" }}
+              onClick={saveChanges}
+            >
               Save Changes
             </button>
-            <button className="btn btn-primary btn-sm" onClick={getLastSave}>
+            <button
+              className="btn btn-primary btn-sm"
+              style={{ marginRight: "0.5em" }}
+              onClick={getLastSave}
+            >
               Get last save
             </button>
           </section>

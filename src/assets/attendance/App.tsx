@@ -23,6 +23,7 @@ const App: React.FC = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+  api.readFile();
 
   //---------------------------Constants---------------------------------------------------------------
 
@@ -34,7 +35,6 @@ const App: React.FC = () => {
       selectedCrew["Select a Crew"] !== undefined
     ) {
       fetch();
-      //  console.log(filterValue[0]);
       handleFilter(filterValue[0], inputValues, setInputValues);
     }
   }, [selectedCrew]);

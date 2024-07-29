@@ -13,6 +13,26 @@ export interface Person {
   Commit: string;
   Article: string;
 }
+let ipConnect: string = "";
+
+function readFile() {
+  const filePath = "/api/ip.txt"; // Adjust the path relative to the server root
+  fetch(filePath)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.text();
+    })
+    .then((data) => {
+      ipConnect = data;
+      console.log("IP Connected");
+    })
+    .catch((error) => {
+      alert(`Failed to fetch IP ${error}`); // just incase we cannot grab ip
+      console.error("Error fetching file:", error);
+    });
+}
 
 const currentDate = new Date();
 const formattedDate = currentDate.toLocaleDateString(undefined, {
@@ -85,7 +105,7 @@ async function postModified(
 ) {
   try {
     const response = await axios.post<{ message: string }>(
-      `http://192.168.4.21:8080/${postDirectory}`,
+      `${ipConnect}/${postDirectory}`,
       { array: inputArray, filename: filename, crew: crew }
     );
     const responseData = response.data.message;
@@ -100,18 +120,15 @@ const downloadEmailDraftincident = async (inputValues: {
   [key: string]: string;
 }) => {
   try {
-    const response = await axios.get(
-      "http://192.168.4.21:8080/api/download_email_draft",
-      {
-        params: {
-          data: Object.keys(inputValues).map((key) => ({
-            name: key,
-            value: inputValues[key], // grabbing final values
-          })),
-        },
-        responseType: "blob", // Expecting blob data
-      }
-    );
+    const response = await axios.get(`${ipConnect}/api/download_email_draft`, {
+      params: {
+        data: Object.keys(inputValues).map((key) => ({
+          name: key,
+          value: inputValues[key], // grabbing final values
+        })),
+      },
+      responseType: "blob", // Expecting blob data
+    });
 
     // Create a Blob object from the response data
     const blob = new Blob([response.data]);
@@ -147,7 +164,7 @@ async function post(
 ): Promise<string> {
   try {
     const response = await axios.post<{ message: string }>(
-      `http://192.168.4.21:8080/${postDirectory}`,
+      `${ipConnect}/${postDirectory}`,
       inputArray
     );
 
@@ -194,36 +211,27 @@ function findPerson(name: string, array: Person[]): Person {
 
 const getValues = async (
   filename: string,
+  postDirectory: string,
   setInputValues: React.Dispatch<
     React.SetStateAction<{ [key: string]: string }>
   >
 ): Promise<void> => {
   try {
-    const response = await axios.get<{ [key: string]: string }>(
-      "http://192.168.4.21:8080/api/getNames",
-      {
-        params: { data: filename },
-      }
-    );
+    const response = await axios.get<string>(`${ipConnect}/${postDirectory}`, {
+      params: { data: filename },
+    });
 
-    const data = response.data; // Data is already parsed as JSON
-
-    // Check if data is an array and convert it if necessary
-    if (Array.isArray(data)) {
-      const transformedData = data.reduce(
-        (acc: { [key: string]: string }, item: { [key: string]: string }) => {
-          const [key] = Object.keys(item);
-          acc[key] = item[key];
-          return acc;
-        },
-        {}
-      );
-      setInputValues(transformedData);
-    } else {
-      // If data is already an object
-      console.log(data);
-      setInputValues(data);
-    }
+    const data = JSON.parse(response.data); // Data is already parsed as JSON
+    const object = data[0]; // Because it is encapsulated in an array
+    Object.keys(object).forEach((key) => {
+      setInputValues((prevValues) => {
+        const newValues = {
+          ...prevValues,
+          [key]: `${object[key]}`,
+        };
+        return newValues;
+      });
+    });
   } catch (error) {
     alert(`"Error Please screenshot and show Peter :)" ${error}`);
     console.error("Error fetching data:", error);
@@ -233,14 +241,12 @@ const getValues = async (
 //------------------------------ to fetch employees -----------------------------
 async function getNames(filename: string): Promise<Person[]> {
   try {
-    const response = await axios.get<string>(
-      "http://192.168.4.21:8080/api/getNames",
-      {
-        params: {
-          data: filename,
-        },
-      }
-    );
+    console.log(ipConnect);
+    const response = await axios.get<string>(`${ipConnect}/api/getNames`, {
+      params: {
+        data: filename,
+      },
+    });
 
     const data = JSON.parse(response.data);
     const array: Person[] = data.map((item: Person) => ({
@@ -287,18 +293,15 @@ const downloadEmailDraft = async (
   rows: string[]
 ) => {
   try {
-    const response = await axios.get(
-      "http://192.168.4.21:8080/api/download_email_draft",
-      {
-        params: {
-          data: Object.keys(inputValues).map((key) => ({
-            name: getKPI(key, columns, columnValue, rowsDefault, rows),
-            value: inputValues[key], // grabbing final values
-          })),
-        },
-        responseType: "blob", // Expecting blob data
-      }
-    );
+    const response = await axios.get(`${ipConnect}/api/download_email_draft`, {
+      params: {
+        data: Object.keys(inputValues).map((key) => ({
+          name: getKPI(key, columns, columnValue, rowsDefault, rows),
+          value: inputValues[key], // grabbing final values
+        })),
+      },
+      responseType: "blob", // Expecting blob data
+    });
 
     // Create a Blob object from the response data
     const blob = new Blob([response.data]);
@@ -406,4 +409,5 @@ export default {
   post,
   postModified,
   getValues,
+  readFile,
 };
