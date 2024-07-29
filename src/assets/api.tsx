@@ -224,6 +224,7 @@ const getValues = async (
 
     const data = JSON.parse(response.data); // Data is already parsed as JSON
     const object = data[0]; // Because it is encapsulated in an array
+
     Object.keys(object).forEach((key) => {
       setInputValues((prevValues) => {
         const newValues = {
@@ -234,10 +235,28 @@ const getValues = async (
       });
     });
   } catch (error) {
-    alert(`"Error Please screenshot and show Peter :)" ${error}`);
+    alert(`"Please select a Crew or there is no last save"`);
     console.error("Error fetching data:", error);
   }
 };
+function generateTimeIntervals(
+  startTime: string,
+  endTime: string,
+  interval: number
+): string[] {
+  const times: string[] = [];
+  const start = new Date(`1970-01-01T${startTime}:00`);
+  const end = new Date(`1970-01-01T${endTime}:00`);
+
+  while (start <= end) {
+    const hours = start.getUTCHours().toString().padStart(2, "0");
+    const minutes = start.getUTCMinutes().toString().padStart(2, "0");
+    times.push(`${hours}:${minutes}`);
+    start.setMinutes(start.getUTCMinutes() + interval);
+  }
+
+  return times;
+}
 
 //------------------------------ to fetch employees -----------------------------
 async function getNames(filename: string): Promise<Person[]> {
@@ -259,10 +278,14 @@ async function getNames(filename: string): Promise<Person[]> {
       Allocation: item.Allocation,
       Event: item.Event,
       Reason: item.Reason,
+      isOvertime: "No",
+      OvertimeFrom: "00:00",
+      OvertimeTo: "00:00",
       Commit: item.Commit,
       Article: "",
     }));
 
+    console.log(array);
     return array;
   } catch (error) {
     alert(`"Error Please screenshot and show Peter :)" ${error}`);
@@ -411,4 +434,5 @@ export default {
   postModified,
   getValues,
   readFile,
+  generateTimeIntervals,
 };

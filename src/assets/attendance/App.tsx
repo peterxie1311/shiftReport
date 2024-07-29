@@ -111,6 +111,13 @@ const App: React.FC = () => {
   ];
   const crew: string[] = ["Crew", "Crew A", "Crew B", "Crew C", "PM", "Night"];
   const commitFlag: string[] = ["Commit", "Yes", "No"];
+  const isOvertime: string[] = ["OT", "Yes", "No"];
+  const OvertimeFrom: string[] = ["OT From"].concat(
+    api.generateTimeIntervals("00:00", "23:59", 5)
+  );
+  const OvertimeTo: string[] = ["OT To"].concat(
+    api.generateTimeIntervals("00:00", "23:59", 5)
+  );
 
   const emptyPerson: Person = {
     Name: "",
@@ -154,6 +161,9 @@ const App: React.FC = () => {
     allocation,
     event,
     reason,
+    isOvertime,
+    OvertimeFrom,
+    OvertimeTo,
     commitFlag,
   ];
 
@@ -212,6 +222,16 @@ const App: React.FC = () => {
       inputarray,
       "/api/processNames",
       `nameslist ${selectedCrew["Select a Crew"]}.csv`
+    );
+  }
+
+  function appendCommit( // this is the for appending commit
+    setInputValues: React.Dispatch<React.SetStateAction<Person[]>>
+  ) {
+    setInputValues((prevValues) =>
+      prevValues.map((person) =>
+        person.Article === "" ? { ...person, Commit: "Yes" } : person
+      )
     );
   }
 
@@ -333,6 +353,13 @@ const App: React.FC = () => {
                 selectCrew
               )}
             />
+            <button
+              className="btn btn-secondary"
+              style={{ marginRight: "0.5em" }}
+              onClick={() => appendCommit(setInputValues)}
+            >
+              Set Commit
+            </button>
           </div>
 
           <div className="container entryField">
@@ -364,7 +391,7 @@ const App: React.FC = () => {
             }}
           />
           <button
-            className="btn btn-primary btn-sm"
+            className="btn btn-secondary btn-sm"
             style={{ marginRight: "0.5em" }}
             onClick={addCrew}
           >
@@ -372,7 +399,7 @@ const App: React.FC = () => {
           </button>
 
           <button
-            className="btn btn-primary btn-sm"
+            className="btn btn-secondary btn-sm"
             style={{ marginRight: "0.5em" }}
             onClick={removeCrew}
           >
@@ -380,14 +407,14 @@ const App: React.FC = () => {
           </button>
           <p></p>
           <button
-            className="btn btn-primary btn-sm"
+            className="btn btn-secondary btn-sm"
             style={{ marginRight: "0.5em" }}
             onClick={() => savePreview(inputValues)}
           >
             Save
           </button>
           <button
-            className="btn btn-primary btn-sm"
+            className="btn btn-secondary btn-sm"
             style={{ marginRight: "0.5em" }}
             onClick={() => commitAllocations(inputValues)}
           >

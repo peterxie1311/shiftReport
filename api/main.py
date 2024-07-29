@@ -120,7 +120,8 @@ def getNames():
     try:
         data = request.args.to_dict(flat=False)
         filename = data['data'][0]
-        print(filename)
+        #return jsonify({"message":f"getNames exception: {e}"})
+       
         file_path = os.path.join(os.getcwd(), filename)
         df = pd.read_csv(file_path)
         json_data = df.to_json(orient='records')

@@ -1,1 +1,1 @@
-Name,Position,Crew,Shift,Allocation,Event,Reason,Commit,Article,Gen Date,Worked on Crew,commit
+Name,Position,Crew,Shift,Allocation,Event,Reason,Commit,Article,Gen Date,Worked on Crew,isOvertime,OvertimeFrom,OvertimeTo,commit

@@ -420,21 +420,21 @@ const App: React.FC = () => {
 
           <section>
             <button
-              className="btn btn-primary btn-sm"
+              className="btn btn-secondary btn-sm"
               style={{ marginRight: "0.5em" }}
               onClick={testSubmit}
             >
               Submit
             </button>
             <button
-              className="btn btn-primary btn-sm"
+              className="btn btn-secondary btn-sm"
               style={{ marginRight: "0.5em" }}
               onClick={saveChanges}
             >
               Save Changes
             </button>
             <button
-              className="btn btn-primary btn-sm"
+              className="btn btn-secondary btn-sm"
               style={{ marginRight: "0.5em" }}
               onClick={getLastSave}
             >

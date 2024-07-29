@@ -96,7 +96,7 @@ p {
 .entryField > .head {
   display: grid;
   /* width: auto; */
-  grid-template-columns: 12em 5em 5em 5em 10em 6em 8em 5em auto;
+  grid-template-columns: 12em 5em 5em 5em 10em 6em 8em 5em 5em 5em 5em auto;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
   background-color: rgb(122, 122, 122);
