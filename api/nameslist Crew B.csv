@@ -1,5 +1,5 @@
 Name,Position,Crew,Shift,Allocation,Event,Reason,Commit,Article
-Abdullah Shameem,OM,Crew A,,,,,No,
+Abdullah Shameem,OM,Crew A,,COMS,,,Yes,
 Adam Abrahams,OM,Crew B,,,,,No,
 Adam Cassidy,OM,Crew B,,,,,No,
 Adrian Cook,OM,Crew B,,,,,No,

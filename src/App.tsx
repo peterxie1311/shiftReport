@@ -256,6 +256,16 @@ const App: React.FC = () => {
       "/api/appendDB",
       "database.csv"
     );
+    api.post(
+      "api/data",
+      inputArray,
+      true,
+      inputValues,
+      columns,
+      columnValue,
+      rowsDefault,
+      rows
+    );
   };
 
   //------------------ Handling event change of an HTML input area -------------------------------------

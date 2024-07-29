@@ -1,2 +1,2 @@
-Crew,Shift,Shift Comments and General Information,COM Total,Depal Total,Depal Cases Average,Com Cases/Hour Average,Avg OPM Availability,Fault Duration (Mins),Fault Rate (per 1000 cs),KPI1 Hour 1,KPI1 Hour 2,KPI1 Hour 3,KPI1 Hour 4,KPI1 Hour 5,KPI1 Hour 6,KPI1 Hour 7,KPI1 Hour 8,KPI1 Hour 9,KPI2 Hour 1,KPI2 Hour 2,KPI2 Hour 3,KPI2 Hour 4,KPI2 Hour 5,KPI2 Hour 6,KPI2 Hour 7
-Crew A,Morning,0,0,0,0,0,NaN%,NaN,NaN,0,0,0,0,0,0,0,0,0,0,0,00,0,0,00,0
+Shift,Crew,KPI1 Hour 1,COM Total,Depal Total,Depal Cases Average,Com Cases/Hour Average,Avg OPM Availability,Fault Duration (Mins),Fault Rate (per 1000 cs),KPI1 Hour 2,KPI1 Hour 3
+Morning,Crew A,0,-1,0,0,-0.1111111111111111,NaN%,NaN,NaN,0,-1

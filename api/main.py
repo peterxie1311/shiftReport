@@ -69,55 +69,64 @@ def process_data():
 
 @app.route("/api/processNames", methods=['POST'])
 def process_Names():
-    print("working")
-    data = request.json
-    array = data.get('array', [])
-    filename = data.get('filename', '')
-    # Process the array and filename as needed
-    print("Received array:", array)
-    print("Received filename:", filename)
+    try:
+        print("working")
+        data = request.json
+        array = data.get('array', [])
+        filename = data.get('filename', '')
+        # Process the array and filename as needed
+        print("Received array:", array)
+        print("Received filename:", filename)
 
-    df = pd.DataFrame(array)
+        df = pd.DataFrame(array)
+        df.to_csv(filename, index=False)
+        return jsonify({"message": f"Process Complete: {filename}"})
+    except Exception as e:
+        return jsonify({"message": f"process_Names Function failed exception:{e} filename:{filename}"})
     
-
-    df.to_csv(filename, index=False)
-    return jsonify({"message": f"Process Complete: {filename}"})
+    
 
 @app.route("/api/appendDB", methods=['POST'])
 def appendDf():
-    data = request.json
-    gendate = {'Gen Date':  datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-    array = data.get('array', [])
-    filename = data.get('filename', '')
-    crew = data.get('crew','')
-    workedCrew ={'Worked on Crew':  crew}
-    print(crew)
-    print(array)
-    for i in array:
-        i.update(gendate)
-        i.update(workedCrew)
-    append = pd.DataFrame(array)
-    if os.path.isfile(filename):
-        file=pd.read_csv(filename)
-        df = pd.concat([file, append], ignore_index=True)
-        df.to_csv(filename, index=False)
-    else:
-        append.to_csv(filename, index=False)
+    try:
+        data = request.json
+        gendate = {'Gen Date':  datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+        array = data.get('array', [])
+        filename = data.get('filename', '')
+        crew = data.get('crew','')
+        workedCrew ={'Worked on Crew':  crew}
+        print(crew)
+        print(array)
+        for i in array:
+            i.update(gendate)
+            i.update(workedCrew)
+        append = pd.DataFrame(array)
+        if os.path.isfile(filename):
+            file=pd.read_csv(filename)
+            df = pd.concat([file, append], ignore_index=True)
+            df.to_csv(filename, index=False)
+        else:
+            append.to_csv(filename, index=False)
 
-    return jsonify({"message": f"Appended df {crew}"})
+        return jsonify({"message": f"Appended df {crew}"})
+    except Exception as e:
+        return jsonify({"message": f"Failed exception:{e} Crew:{crew}"})
 
 
 #PLEASE START USING GETNAMES!
 
 @app.route('/api/getNames',methods=['GET'])
 def getNames():
-    data = request.args.to_dict(flat=False)
-    filename = data['data'][0]
-    print(filename)
-    file_path = os.path.join(os.getcwd(), filename)
-    df = pd.read_csv(file_path)
-    json_data = df.to_json(orient='records')
-    return jsonify(json_data)
+    try:
+        data = request.args.to_dict(flat=False)
+        filename = data['data'][0]
+        print(filename)
+        file_path = os.path.join(os.getcwd(), filename)
+        df = pd.read_csv(file_path)
+        json_data = df.to_json(orient='records')
+        return jsonify(json_data)
+    except Exception as e :
+        return jsonify ({"message":f"getNames exception: {e}"})
 
 
 def getIP():
@@ -253,7 +262,7 @@ def download_email_draft():
             # Return the file as an attachment
             return send_file(temp_file_path, as_attachment=True)
         except Exception as e:
-            print(f'Failed to save email draft: {e}')
+            return jsonify({"message":"Error in email drafts {e}"})
        
     finally:
         pythoncom.CoUninitialize()  # Uninitialize COM library
