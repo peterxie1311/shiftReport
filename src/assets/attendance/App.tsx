@@ -112,10 +112,10 @@ const App: React.FC = () => {
   const crew: string[] = ["Crew", "Crew A", "Crew B", "Crew C", "PM", "Night"];
   const commitFlag: string[] = ["Commit", "Yes", "No"];
   const isOvertime: string[] = ["OT", "Yes", "No"];
-  const OvertimeFrom: string[] = ["OT From"].concat(
+  const OvertimeFrom: string[] = ["OTFrom"].concat(
     api.generateTimeIntervals("00:00", "23:59", 5)
   );
-  const OvertimeTo: string[] = ["OT To"].concat(
+  const OvertimeTo: string[] = ["OTTo"].concat(
     api.generateTimeIntervals("00:00", "23:59", 5)
   );
 
@@ -129,6 +129,9 @@ const App: React.FC = () => {
     Reason: "",
     Commit: "",
     Article: "None",
+    OT: "",
+    OTFrom: "",
+    OTTo: "",
   };
   const filterPerson: Person = {
     Name: "Filter",
@@ -140,9 +143,29 @@ const App: React.FC = () => {
     Reason: reason[0],
     Commit: commitFlag[0],
     Article: "",
+    OT: isOvertime[0],
+    OTFrom: OvertimeFrom[0],
+    OTTo: OvertimeTo[0],
+  };
+  const setAllPerson: Person = {
+    Name: "Set All",
+    Position: role[0],
+    Crew: crew[0],
+    Shift: shift[0],
+    Allocation: allocation[0],
+    Event: event[0],
+    Reason: reason[0],
+    Commit: commitFlag[0],
+    Article: "",
+    OT: isOvertime[0],
+    OTFrom: OvertimeFrom[0],
+    OTTo: OvertimeTo[0],
   };
 
-  const [filterValue, setfilterValues] = useState<Person[]>([filterPerson]);
+  const [filterValue, setfilterValues] = useState<Person[]>([
+    filterPerson,
+    setAllPerson,
+  ]);
 
   const [inputValues, setInputValues] = useState<Person[]>([emptyPerson]);
 
@@ -179,34 +202,60 @@ const App: React.FC = () => {
           Article: "", // Set the Article field to an empty string
         }))
       );
+      let articleValue = ""; // initialise
 
       for (const key of Object.keys(person)) {
         const value = person[key as keyof typeof person];
-        if (key !== value) {
+
+        if (key !== value && key !== "Name" && key !== "Article") {
+          // console.log(`THIS IS THE KEY: ${key} THIS IS THE VALUE: ${value}`);
           setInputValues((prevValues) =>
             prevValues.map((personMap) => {
-              // Determine the value for the `Article` field
-              let articleValue = "";
-
-              for (const key1 of Object.keys(personMap)) {
-                if (key1 === "Name") {
-                  continue; // Skip the "Name" key
-                }
-
-                if (
-                  personMap[key1 as keyof Person] !==
-                  person[key1 as keyof Person]
-                ) {
-                  if (
-                    person[key1 as keyof Person] !== key1 &&
-                    key1 !== "Article"
-                  ) {
-                    //console.log(key1);
-                    articleValue = "None"; // Set to "None" if values differ
-                    break; // Exit the loop once a difference is found
-                  }
-                }
+              if (personMap.Article === "None") {
+                articleValue = "None";
+              } else {
+                articleValue = "";
               }
+
+              if (
+                personMap[key as keyof Person] !== value
+                //  &&
+                // personMap[key as keyof Person] !== null &&
+                // personMap[key as keyof Person] !== undefined
+              ) {
+                articleValue = "None";
+              }
+
+              // if (personMap)
+              //   console.log(`filter key:${key} filterValue: ${value}`);
+
+              // for (const personKey of Object.keys(personMap)) {
+              //   if (personKey === "Name" || personKey !== key) {
+              //     continue; // Skip the "Name" key
+              //   }
+
+              //   if(){
+
+              //   }
+
+              //    console.log(`${personKey}: PERSONKEY`);
+              //    console.log(`${key}: FilterKey`);
+
+              //   if (
+              //     personMap[personKey as keyof Person] !==
+              //     person[personKey as keyof Person] // if value of filter does not match value of person
+              //   ) {
+              //     if (
+              //       person[personKey as keyof Person] !==
+              //         personMap[personKey as keyof Person] &&
+              //       personKey !== "Article"
+              //     ) {
+              //       console.log(personMap[personKey as keyof Person]);
+              //       articleValue = "None"; // Set to "None" if values differ
+              //       break; // Exit the loop once a difference is found
+              //     }
+              //   }
+              // }
               return {
                 ...personMap,
                 Article: articleValue, // Apply the determined `Article` value
@@ -217,6 +266,7 @@ const App: React.FC = () => {
       }
     }
   }
+
   function savePreview(inputarray: Person[]) {
     api.postModified(
       inputarray,
@@ -225,6 +275,16 @@ const App: React.FC = () => {
     );
   }
 
+  function appendSetAll( // this is the for appending commit
+    setInputValues: React.Dispatch<React.SetStateAction<Person[]>>,
+    person: Person
+  ) {
+    setInputValues((prevValues) =>
+      prevValues.map((person) =>
+        person.Article === "" ? { ...person, Commit: "Yes" } : person
+      )
+    );
+  }
   function appendCommit( // this is the for appending commit
     setInputValues: React.Dispatch<React.SetStateAction<Person[]>>
   ) {
@@ -264,6 +324,9 @@ const App: React.FC = () => {
       Reason: "",
       Commit: "",
       Article: "",
+      OT: "",
+      OTFrom: "",
+      OTTo: "",
     };
 
     setInputValues((prevValues) => [...prevValues, newPerson]);
@@ -288,10 +351,17 @@ const App: React.FC = () => {
     const isCommit = {
       Commit: "Yes",
     };
-    const newValues = {
+    let newValues = {
       [field]: value,
-      ...(field === "Allocation" && value != "Allocation" ? isCommit : {}), // if field is allocation and value isnt allocation then tick yes for commit :)
+      // ...(field === "Allocation" && value != "Allocation" ? isCommit : {}), // if field is allocation and value isnt allocation then tick yes for commit :)
     };
+
+    if (personName != "Filter") {
+      newValues = {
+        [field]: value,
+        ...(field === "Allocation" && value != "Allocation" ? isCommit : {}), // if field is allocation and value isnt allocation then tick yes for commit :)
+      };
+    }
 
     if (personName === "Filter") {
       setfilterValues((prevValues) => {
@@ -300,8 +370,15 @@ const App: React.FC = () => {
             person.Name === personName ? { ...person, ...newValues } : person // if person name is = person name in event then append newValues else return the person
         );
         handleFilter(updatedFilterValues[0], inputValues, setInputValues);
-
         return updatedFilterValues;
+      });
+    } else if (personName === "Set All") {
+      setfilterValues((prevValues) => {
+        const updatedSetAll = prevValues.map(
+          (person) =>
+            person.Name === personName ? { ...person, ...newValues } : person // if person name is = person name in event then append newValues else return the person
+        );
+        return updatedSetAll;
       });
     } else {
       setInputValues((prevValues) =>

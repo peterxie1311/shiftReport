@@ -10,6 +10,9 @@ export interface Person {
   Allocation: string;
   Event: string;
   Reason: string;
+  OT: string;
+  OTFrom: string;
+  OTTo: string;
   Commit: string;
   Article: string;
 }
@@ -202,6 +205,9 @@ function findPerson(name: string, array: Person[]): Person {
     Reason: "",
     Commit: "",
     Article: "",
+    OT: "",
+    OTFrom: "",
+    OTTo: "",
   };
 
   const foundPerson = array.find((person) => person.Name === name);
@@ -278,14 +284,14 @@ async function getNames(filename: string): Promise<Person[]> {
       Allocation: item.Allocation,
       Event: item.Event,
       Reason: item.Reason,
-      isOvertime: "No",
-      OvertimeFrom: "00:00",
-      OvertimeTo: "00:00",
+      OT: item.OT,
+      OTFrom: item.OTFrom,
+      OTTO: item.OTTo,
       Commit: item.Commit,
       Article: "",
     }));
 
-    console.log(array);
+    // console.log(array);
     return array;
   } catch (error) {
     alert(`"Error Please screenshot and show Peter :)" ${error}`);
