@@ -275,15 +275,30 @@ const App: React.FC = () => {
     );
   }
 
-  function appendSetAll( // this is the for appending commit
+  function appendSetAll(
     setInputValues: React.Dispatch<React.SetStateAction<Person[]>>,
     person: Person
   ) {
-    setInputValues((prevValues) =>
-      prevValues.map((person) =>
-        person.Article === "" ? { ...person, Commit: "Yes" } : person
-      )
-    );
+    //Update state in a single batch
+    setInputValues((prevValues) => {
+      return prevValues.map((personMap) => {
+        // Create a copy of the personMap and update dynamically
+        const updatedPerson = { ...personMap };
+
+        // Iterate over keys and set the value for the corresponding key if the condition is met
+        for (const key of Object.keys(person)) {
+          const value = person[key as keyof Person];
+          if (key !== value && key !== "Name") {
+            // Check if the Article field is empty and update the dynamic key
+            if (personMap.Article === "") {
+              console.log(value);
+              updatedPerson[key as keyof Person] = value;
+            }
+          }
+        }
+        return updatedPerson;
+      });
+    });
   }
   function appendCommit( // this is the for appending commit
     setInputValues: React.Dispatch<React.SetStateAction<Person[]>>
@@ -356,7 +371,7 @@ const App: React.FC = () => {
       // ...(field === "Allocation" && value != "Allocation" ? isCommit : {}), // if field is allocation and value isnt allocation then tick yes for commit :)
     };
 
-    if (personName != "Filter") {
+    if (personName != "Filter" && personName != "Set All") {
       newValues = {
         [field]: value,
         ...(field === "Allocation" && value != "Allocation" ? isCommit : {}), // if field is allocation and value isnt allocation then tick yes for commit :)
@@ -432,10 +447,22 @@ const App: React.FC = () => {
             />
             <button
               className="btn btn-secondary"
-              style={{ marginRight: "0.5em" }}
-              onClick={() => appendCommit(setInputValues)}
+              // style={{ marginRight: "0.5em" }}
+              onClick={() =>
+                appendSetAll(
+                  setInputValues,
+                  api.findPerson("Set All", filterValue)
+                )
+              }
             >
-              Set Commit
+              Confirm Set All
+            </button>
+            <button
+              className="btn btn-secondary"
+              // style={{ marginRight: "0.5em" }}
+              onClick={() => fetch()}
+            >
+              Roll Back
             </button>
           </div>
 

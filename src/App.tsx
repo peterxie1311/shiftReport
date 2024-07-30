@@ -79,6 +79,7 @@ const App: React.FC = () => {
       "OM25d - Rsn Group add filter = User & STRAT SUB = COM",
     ],
     ["Missing Cases", "number", "WP02"],
+    ["Inbound Rejected Pals", "number", "LMFC14"],
     ["Blocked Cases", "number", "IN01"],
     ["#Blocked Equipment", "number", "BL01"],
   ];
