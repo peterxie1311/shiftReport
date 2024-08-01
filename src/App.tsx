@@ -247,15 +247,14 @@ const App: React.FC = () => {
     api.getValues(
       `shiftReport ${crewValue}.csv`,
       "api/getNames",
-      setInputValues
+      setInputValues,
+      setIsVisible
     );
     //  console.log("THIS IS THE INPUT ARRAY");
     console.log(inputValues);
   };
   const getLastReport = () => {
-    setIsVisible(true);
-    api.getValues(``, "api/getReport", setInputValues);
-    setIsVisible(false);
+    api.getValues(``, "api/getReport", setInputValues, setIsVisible);
   };
   const testSubmit = () => {
     //postData

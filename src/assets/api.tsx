@@ -221,9 +221,11 @@ const getValues = async (
   postDirectory: string,
   setInputValues: React.Dispatch<
     React.SetStateAction<{ [key: string]: string }>
-  >
+  >,
+  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>
 ): Promise<void> => {
   try {
+    setIsVisible(true);
     const response = await axios.get<string>(`${ipConnect}/${postDirectory}`, {
       params: { data: filename },
     });
@@ -243,6 +245,8 @@ const getValues = async (
   } catch (error) {
     alert(`"Please select a Crew or there is no last save"`);
     console.error("Error fetching data:", error);
+  } finally {
+    setIsVisible(false);
   }
 };
 function generateTimeIntervals(
