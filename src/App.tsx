@@ -149,6 +149,8 @@ const App: React.FC = () => {
     value: inputValues[key] as string, // using this for the database file
   }));
 
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+
   //-------------- Setting Rows ----------------------------------------------------------------------------------------
   useEffect(() => {
     if (inputValues.Shift === "Morning") {
@@ -251,9 +253,9 @@ const App: React.FC = () => {
     console.log(inputValues);
   };
   const getLastReport = () => {
+    setIsVisible(true);
     api.getValues(``, "api/getReport", setInputValues);
-    //  console.log("THIS IS THE INPUT ARRAY");
-    console.log(inputValues);
+    setIsVisible(false);
   };
   const testSubmit = () => {
     //postData
@@ -334,6 +336,20 @@ const App: React.FC = () => {
           ]}
         />
       </header>
+      {isVisible && (
+        <img
+          id="myGif"
+          src="src/loading.gif"
+          alt="Loading..."
+          style={{
+            position: "fixed",
+            top: 0,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 1000,
+          }}
+        />
+      )}
       <main>
         <div className="main-content">
           <div className="container entryField">

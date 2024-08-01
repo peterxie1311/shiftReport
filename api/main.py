@@ -119,7 +119,7 @@ def appendDf():
 def getReport():
     
     print('Hello')
-    directory_path = 'so01'
+    directory_path = 'so01' # r'\\wms-app1-w19.dc9462wmsdom.local\WMS-MEDIA\bmis\export\SO01 EXPORT' need to change to this on the production server 
     # collect the latest file in the directory:
     latest_file = None
     latest_mod_date = None
@@ -136,10 +136,10 @@ def getReport():
                 latest_file = file_name
                 latest_file_path = file_path
 
-    df = pd.read_csv('C:\\Users\\pxie\\Desktop\\shiftReport\\api\\so01\\so01_20240730050000_20240731111401.csv', encoding='iso-8859-1',skipfooter=1)
-
-    
+    df = pd.read_csv('C:\\Users\\pxie\\Desktop\\shiftReport\\api\\so01\\so01_20240730050000_20240731111401.csv', encoding='iso-8859-1',skipfooter=1, engine='python') # df = pd.read_csv(latest_file_path, encoding='iso-8859-1',skipfooter=1 , engine='python')
     generalInfo = {'Shift Comments and General Information':f'File Name: {latest_file} Mod Date: {latest_mod_date} filepath: {latest_file_path}'}
+    sumCasesAll = {'Cases All':df['Cases All'].sum()}
+    inbPals = {'Pallets Received':df['Inb. pallets'].sum()}
     # Generate dynamic keys and values
     df['COM cases sum'] = df['COM cases sum'].fillna(0)
     df['Depal. cases'] = df['Depal. cases'].fillna(0)
@@ -156,15 +156,15 @@ def getReport():
 
     kpi4_keys = [f'KPI4 Hour {i+1}' for i in range(len(df))]
     kpi4_values = df['RPK cases'].tolist()
-
-   
-
     kpi1 = dict(zip(kpi1_keys, kpi1_values))
     kpi2 = dict(zip(kpi2_keys, kpi2_values))
     kpi3 = dict(zip(kpi3_keys, kpi3_values))
     kpi4 = dict(zip(kpi4_keys, kpi4_values))
 
-    combined_data = {**kpi1, **kpi2, **kpi3, **kpi4, **generalInfo}
+   
+
+
+    combined_data = {**kpi1, **kpi2, **kpi3, **kpi4, **generalInfo,**sumCasesAll,**inbPals}
     
     df = pd.DataFrame([combined_data])
    
