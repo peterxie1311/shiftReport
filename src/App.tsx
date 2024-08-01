@@ -250,6 +250,11 @@ const App: React.FC = () => {
     //  console.log("THIS IS THE INPUT ARRAY");
     console.log(inputValues);
   };
+  const getLastReport = () => {
+    api.getValues(``, "api/getReport", setInputValues);
+    //  console.log("THIS IS THE INPUT ARRAY");
+    console.log(inputValues);
+  };
   const testSubmit = () => {
     //postData
     postData();
@@ -440,6 +445,13 @@ const App: React.FC = () => {
               onClick={getLastSave}
             >
               Get last save
+            </button>
+            <button
+              className="btn btn-secondary btn-sm"
+              style={{ marginRight: "0.5em" }}
+              onClick={getLastReport}
+            >
+              Get Report
             </button>
           </section>
         </div>

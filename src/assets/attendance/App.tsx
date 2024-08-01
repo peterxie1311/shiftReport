@@ -436,34 +436,38 @@ const App: React.FC = () => {
               />
             ))}
 
-            <Dropdown
-              id={"Select a Crew"}
-              selections={["Crew A", "Crew B", "Crew C"]}
-              inputValues={selectedCrew}
-              mouseChange={api.handleDropdownItemClick(
-                "Select a Crew",
-                selectCrew
-              )}
-            />
-            <button
-              className="btn btn-secondary"
-              // style={{ marginRight: "0.5em" }}
-              onClick={() =>
-                appendSetAll(
-                  setInputValues,
-                  api.findPerson("Set All", filterValue)
-                )
-              }
+            <div
+              style={{ display: "flex", flexDirection: "row", gap: "0.5em" }}
             >
-              Confirm Set All
-            </button>
-            <button
-              className="btn btn-secondary"
-              // style={{ marginRight: "0.5em" }}
-              onClick={() => fetch()}
-            >
-              Roll Back
-            </button>
+              <Dropdown
+                id={"Select a Crew"}
+                selections={["Crew A", "Crew B", "Crew C"]}
+                inputValues={selectedCrew}
+                mouseChange={api.handleDropdownItemClick(
+                  "Select a Crew",
+                  selectCrew
+                )}
+              />
+              <button
+                className="btn btn-secondary"
+                // style={{ marginRight: "0.5em" }}
+                onClick={() =>
+                  appendSetAll(
+                    setInputValues,
+                    api.findPerson("Set All", filterValue)
+                  )
+                }
+              >
+                Confirm Set All
+              </button>
+              <button
+                className="btn btn-secondary"
+                // style={{ marginRight: "0.5em" }}
+                onClick={() => fetch()}
+              >
+                Roll Back
+              </button>
+            </div>
           </div>
 
           <div className="container entryField">

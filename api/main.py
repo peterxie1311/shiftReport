@@ -41,6 +41,8 @@ def process_data():
             if len(data_dict[d['name']]) == 0:
                 data_dict[d['name']].append(d['value'])
 
+                
+
         
 
         df = pd.DataFrame(data_dict)
@@ -111,6 +113,63 @@ def appendDf():
         return jsonify({"message": f"Appended df {crew}"})
     except Exception as e:
         return jsonify({"message": f"Failed exception:{e} Crew:{crew}"})
+    
+
+@app.route('/api/getReport',methods=['GET'])
+def getReport():
+    
+    print('Hello')
+    directory_path = 'so01'
+    # collect the latest file in the directory:
+    latest_file = None
+    latest_mod_date = None
+    latest_file_path = ""
+
+    # Iterate through files and find the latest modification date
+    for file_name in os.listdir(directory_path):
+        file_path = os.path.join(directory_path, file_name)
+        if os.path.isfile(file_path):
+            mod_time = os.path.getmtime(file_path)
+            mod_date = datetime.fromtimestamp(mod_time)
+            if latest_mod_date is None or mod_date > latest_mod_date:
+                latest_mod_date = mod_date
+                latest_file = file_name
+                latest_file_path = file_path
+
+    df = pd.read_csv('C:\\Users\\pxie\\Desktop\\shiftReport\\api\\so01\\so01_20240730050000_20240731111401.csv', encoding='iso-8859-1',skipfooter=1)
+
+    
+    generalInfo = {'Shift Comments and General Information':f'File Name: {latest_file} Mod Date: {latest_mod_date} filepath: {latest_file_path}'}
+    # Generate dynamic keys and values
+    df['COM cases sum'] = df['COM cases sum'].fillna(0)
+    df['Depal. cases'] = df['Depal. cases'].fillna(0)
+    df['AIO cases sum'] = df['AIO cases sum'].fillna(0)
+    df['RPK cases'] = df['RPK cases'].fillna(0)
+    kpi1_keys = [f'KPI1 Hour {i+1}' for i in range(len(df))]
+    kpi1_values = df['COM cases sum'].tolist()
+
+    kpi2_keys = [f'KPI2 Hour {i+1}' for i in range(len(df))]
+    kpi2_values = df['Depal. cases'].tolist()
+
+    kpi3_keys = [f'KPI3 Hour {i+1}' for i in range(len(df))]
+    kpi3_values = df['AIO cases sum'].tolist()
+
+    kpi4_keys = [f'KPI4 Hour {i+1}' for i in range(len(df))]
+    kpi4_values = df['RPK cases'].tolist()
+
+   
+
+    kpi1 = dict(zip(kpi1_keys, kpi1_values))
+    kpi2 = dict(zip(kpi2_keys, kpi2_values))
+    kpi3 = dict(zip(kpi3_keys, kpi3_values))
+    kpi4 = dict(zip(kpi4_keys, kpi4_values))
+
+    combined_data = {**kpi1, **kpi2, **kpi3, **kpi4, **generalInfo}
+    
+    df = pd.DataFrame([combined_data])
+   
+    json_data = df.to_json(orient='records')
+    return jsonify(json_data)
 
 
 #PLEASE START USING GETNAMES!
