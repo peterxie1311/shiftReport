@@ -79,7 +79,7 @@ const App: React.FC = () => {
       "OM25d - Rsn Group add filter = User & STRAT SUB = COM",
     ],
     ["Missing Cases", "number", "WP02"],
-    ["Inbound Rejected Pals", "number", "LMFC14"],
+    ["Inbound Rejected Pallets", "number", "LMFC14"],
     ["Blocked Cases", "number", "IN01"],
     ["#Blocked Equipment", "number", "BL01"],
   ];
@@ -327,11 +327,17 @@ const App: React.FC = () => {
     <>
       <header>
         <Witron
-          navItems={["Incident Report", "Attendance", "Shift Report"]}
+          navItems={[
+            "Incident Report",
+            "Attendance",
+            "Shift Report",
+            "Allocations",
+          ]}
           links={[
             "/src/assets/incident/index.html",
             "/src/assets/attendance/index.html",
             "/index.html",
+            "src/assets/allocation/index.html",
           ]}
         />
       </header>
@@ -349,6 +355,7 @@ const App: React.FC = () => {
           }}
         />
       )}
+
       <main>
         <div className="main-content">
           <div className="container entryField">

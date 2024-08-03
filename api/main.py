@@ -136,7 +136,11 @@ def getReport():
                 latest_file = file_name
                 latest_file_path = file_path
 
-    df = pd.read_csv('C:\\Users\\pxie\\Desktop\\shiftReport\\api\\so01\\so01_20240730050000_20240731111401.csv', encoding='iso-8859-1',skipfooter=1, engine='python') # df = pd.read_csv(latest_file_path, encoding='iso-8859-1',skipfooter=1 , engine='python')
+    df = pd.read_csv('C:\\Users\\pxie\\Desktop\\shiftReport\\api\\so01\\so01_20240730050000_20240731111401.csv', encoding='iso-8859-1',skipfooter=2, engine='python') # df = pd.read_csv(latest_file_path, encoding='iso-8859-1',skipfooter=1 , engine='python')
+
+
+    print(df)
+
     generalInfo = {'Shift Comments and General Information':f'File Name: {latest_file} Mod Date: {latest_mod_date} filepath: {latest_file_path}'}
     sumCasesAll = {'Cases All':df['Cases All'].sum()}
     inbPals = {'Pallets Received':df['Inb. pallets'].sum()}
@@ -160,10 +164,6 @@ def getReport():
     kpi2 = dict(zip(kpi2_keys, kpi2_values))
     kpi3 = dict(zip(kpi3_keys, kpi3_values))
     kpi4 = dict(zip(kpi4_keys, kpi4_values))
-
-   
-
-
     combined_data = {**kpi1, **kpi2, **kpi3, **kpi4, **generalInfo,**sumCasesAll,**inbPals}
     
     df = pd.DataFrame([combined_data])
@@ -310,7 +310,7 @@ def download_email_draft():
         mail.Cc = mailCc
 
         # Specify the directory where you want to save the temporary file
-        custom_dir = 'C:\\Users\\pxie\\Desktop\\shiftreport\\api'  # Change this to your desired directory
+        custom_dir = 'C:\\Users\\pxie\\Desktop\\shiftreport\\api'  # Change this to your desired directory 'C:\\Users\\localuser\\Desktop\\shiftReport\\api'
         if not os.path.exists(custom_dir):
             os.makedirs(custom_dir)
 

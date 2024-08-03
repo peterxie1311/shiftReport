@@ -7,7 +7,24 @@ interface WitronProps {
   links: string[];
 }
 
-const Header: FC<WitronProps> = ({ navItems, links }) => {
+const defaultNavItems = [
+  "Incident Report",
+  "Attendance",
+  "Shift Report",
+  "Allocations",
+];
+
+const defaultLinks = [
+  "/src/assets/incident/index.html",
+  "/src/assets/attendance/index.html",
+  "/index.html",
+  "/src/assets/allocation/index.html",
+];
+
+const Header: FC<WitronProps> = ({
+  navItems = defaultNavItems,
+  links = defaultLinks,
+}) => {
   return (
     <header>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -20,11 +37,11 @@ const Header: FC<WitronProps> = ({ navItems, links }) => {
             />
           </a>
           <div className="collapse navbar-collapse">
-            <ul className="navbar-nav mr-auto">
-              {navItems.map((items: string, index: number) => (
+            <ul className="navbar-nav me-auto">
+              {navItems.map((item, index) => (
                 <li className="nav-item" key={index}>
                   <a className="nav-link" href={links[index]}>
-                    {items}
+                    {item}
                   </a>
                 </li>
               ))}
