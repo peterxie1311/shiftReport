@@ -17,12 +17,14 @@
     "create-vite": "^5.4.0",
     "react": "^18.2.0",
     "react-datepicker": "^7.3.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-table": "^7.8.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
+    "@types/react-table": "^7.7.20",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
