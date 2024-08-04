@@ -8,9 +8,9 @@ import LargeInput from "./assets/largeInput";
 import BoxToolTip from "./assets/BoxTooltip";
 import BoxTooltiplabel from "./assets/BoxTooltiplabel";
 import Tablemaker from "./assets/Tablemaker";
-import api, { Person, interfaceObject } from "./assets/api";
+import api, { interfaceObject } from "./assets/api";
 import Dropdown from "./assets/dropdown";
-import axios from "axios";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
@@ -203,12 +203,16 @@ const App: React.FC = () => {
     ) {
       inputArray.push(...kpiValues);
       inputArray.push({ name: "Report type", value: "Shift" });
-      api.post(
-        "/api/data",
+
+      api.postModified(
         inputArray,
-        true,
+        api.appendDB,
+        api.shiftreportDB,
+        inputValues["Crew"]
+      );
+      api.downloadEmailDraft(
         inputValues,
-        columns,
+        columnNames,
         columnValue,
         rowsDefault,
         rows
@@ -256,7 +260,7 @@ const App: React.FC = () => {
   const getLastReport = () => {
     api.getValues(``, "api/getReport", setInputValues, setIsVisible);
   };
-  const testSubmit = () => {
+  const submit = () => {
     //postData
     postData();
 
@@ -450,7 +454,7 @@ const App: React.FC = () => {
             <button
               className="btn btn-secondary btn-sm"
               style={{ marginRight: "0.5em" }}
-              onClick={testSubmit}
+              onClick={submit}
             >
               Submit
             </button>

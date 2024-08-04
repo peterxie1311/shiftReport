@@ -93,32 +93,46 @@ const Tablemaker: FC<TablemakerProps> = ({
             <p>{targetString[index]}</p>
 
             {keys.map((stuff: string) => (
-              <input
-                key={`${columns[index + columnNames.length]}${stuff}`}
-                type="string"
-                name={`${columns[index + columnNames.length]}${stuff}`}
-                value={
-                  inputValues[
-                    `${columns[index + columnNames.length]}${stuff}`
-                  ] || ""
-                }
-                onChange={handleChange}
-                style={{
-                  color: getCommentcolor(),
-                  backgroundColor: getColor(
-                    parseFloat(targetString[index]),
-                    Number(
-                      inputValues[columns[index + columnNames.length] + stuff]
-                    )
-                  ),
-                  borderColor: getColor(
-                    parseFloat(targetString[index]),
-                    Number(
-                      inputValues[columns[index + columnNames.length] + stuff]
-                    )
-                  ),
-                }}
-              />
+              <div
+                key={stuff}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <input
+                  key={`${columns[index + columnNames.length]}${stuff}`}
+                  type="string"
+                  name={`${columns[index + columnNames.length]}${stuff}`}
+                  value={
+                    inputValues[
+                      `${columns[index + columnNames.length]}${stuff}`
+                    ] || ""
+                  }
+                  onChange={handleChange}
+                  style={{
+                    color: getCommentcolor(),
+                    backgroundColor: getColor(
+                      parseFloat(targetString[index]),
+                      Number(
+                        inputValues[columns[index + columnNames.length] + stuff]
+                      )
+                    ),
+                    borderColor: getColor(
+                      parseFloat(targetString[index]),
+                      Number(
+                        inputValues[columns[index + columnNames.length] + stuff]
+                      )
+                    ),
+                  }}
+                />
+
+                <span className="dotTooltip">
+                  💬
+                  <div className="tooltip">
+                    {inputValues[
+                      `${columns[index + columnNames.length]}${stuff}`
+                    ] || ""}
+                  </div>
+                </span>
+              </div>
             ))}
           </React.Fragment>
         ))}

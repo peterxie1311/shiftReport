@@ -1,6 +1,11 @@
 import axios from "axios";
 import { ChangeEvent } from "react";
 
+//------------API CONST ---------
+
+const appendDB: string = "/api/appendDB";
+const shiftreportDB: string = "Shift.csv";
+
 //------------------------INTERFACES!---------------------
 export interface Person {
   Name: string;
@@ -123,6 +128,7 @@ const downloadEmailDraftincident = async (inputValues: {
   [key: string]: string;
 }) => {
   try {
+    console.log("HELLO");
     const response = await axios.get(`${ipConnect}/api/download_email_draft`, {
       params: {
         data: Object.keys(inputValues).map((key) => ({
@@ -327,6 +333,7 @@ const downloadEmailDraft = async (
   rows: string[]
 ) => {
   try {
+    console.log("HELLO");
     const response = await axios.get(`${ipConnect}/api/download_email_draft`, {
       params: {
         data: Object.keys(inputValues).map((key) => ({
@@ -354,7 +361,13 @@ const downloadEmailDraft = async (
     // Clean up by revoking the URL object
     window.URL.revokeObjectURL(url);
   } catch (error) {
-    alert(`"Error Please screenshot and show Peter :)" ${error}`);
+    // Handle and alert error message
+    if (axios.isAxiosError(error) && error.response) {
+      // Extract the error message from the response
+      const errorMessage =
+        error.response.data.message || "An unknown error occurred.";
+      alert(`Error: ${errorMessage}`);
+    }
     console.error("Error:", error);
   }
 };
@@ -445,4 +458,6 @@ export default {
   getValues,
   readFile,
   generateTimeIntervals,
+  appendDB,
+  shiftreportDB,
 };
