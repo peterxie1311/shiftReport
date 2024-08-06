@@ -4,9 +4,10 @@ from datetime import datetime
 from flask_cors import CORS
 import pandas as pd
 import socket
-# import win32com.client as win32
-# import pythoncom
+import win32com.client as win32
+import pythoncom
 import os
+import random
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -137,10 +138,8 @@ def getReport():
                 latest_file = file_name
                 latest_file_path = file_path
 
-    df = pd.read_csv('C:\\Users\\pxie\\Desktop\\shiftReport\\api\\so01\\so01_20240730050000_20240731111401.csv', encoding='iso-8859-1',skipfooter=2, engine='python') # df = pd.read_csv(latest_file_path, encoding='iso-8859-1',skipfooter=1 , engine='python')
+    df = pd.read_csv('C:\\Users\\pxie\\Desktop\\shiftReport\\api\\so01\\so01.csv', encoding='iso-8859-1',skipfooter=2, engine='python') # df = pd.read_csv(latest_file_path, encoding='iso-8859-1',skipfooter=1 , engine='python')
 
-
-    print(df)
 
     generalInfo = {'Shift Comments and General Information':f'File Name: {latest_file} Mod Date: {latest_mod_date} filepath: {latest_file_path}'}
     sumCasesAll = {'Cases All':df['Cases All'].sum()}
@@ -188,6 +187,89 @@ def getNames():
         return jsonify(json_data)
     except Exception as e :
         return jsonify ({"message":f"getNames exception: {e}"}),400
+    
+
+def generate_random_hex_color():
+    random_int = random.randint(0, 0xFFFFFF)
+    hex_color = f"#{random_int:06X}"
+    return hex_color
+
+@app.route('/api/getAllocations', methods=['GET'])
+def getAllocations():
+    try:
+        data = request.args.to_dict(flat=False)
+        filename = data['data'][0]
+        file_path = os.path.join(os.getcwd(), filename)
+        df = pd.read_csv(file_path)
+        df_html = df[df['Commit'] == 'Yes']
+        df_html = df_html[['Name', 'Allocation']]
+        df_html = df_html.groupby('Allocation')['Name'].agg(lambda x: ', '.join(x)).reset_index()
+        df_html = df_html.sort_values(by='Allocation')
+        distinct_positions = df['Position'].unique()
+        position_colours = {position: generate_random_hex_color() for position in distinct_positions} # USE THIS for defining position colours you will have to build df_html differently
+
+        # Build the HTML table rows
+        dfTable = ''
+        for i, r in df_html.iterrows():
+            dfTable += f"<tr>\n"
+            for col_name in df_html.columns:
+                value = r[col_name]
+                if col_name == "Name":
+                    dfTable += f"<td style=\"color:{generate_random_hex_color()}\">{value}</td>\n"
+                else:
+                    dfTable += f"<td>{value}</td>\n"
+             
+            dfTable += f"</tr>\n" 
+        table = f"""
+            <html>
+            <head>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif; /* Set the font for the entire document */
+                }}
+                table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-family: 'Verdana', sans-serif; /* Set the font for the table */
+                }}
+                th, td {{
+                    padding: 10px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                    font-size: 14px; /* Set the font size */
+                    font-weight: normal; /* Set the font weight */
+                }}
+                th {{
+                    background-color: #005ca9;
+                    color: white;
+                    font-weight: bold; 
+                }}
+                tr:nth-child(even) {{
+                    background-color: #f2f2f2;
+                }}
+            </style>
+            </head>
+            <body>
+            <table class="dataframe">
+                <thead>
+                    <tr>
+                        {"".join([f"<th>{col}</th>" for col in df_html.columns])} 
+                    </tr>
+                </thead>
+                <tbody>
+                    {dfTable}
+                </tbody>
+            </table>
+            </body>
+            </html>
+            """
+        with open('allocations.html', 'w') as file:
+            file.write(table)
+
+        return send_file('allocations.html', as_attachment=True)
+    except Exception as e:
+        print(e)
+        return jsonify({"message": f"Exception: {e}"}), 400
 
 
 def getIP():
@@ -203,131 +285,132 @@ def getIP():
     except Exception as e:
         print(f"Could not determine local IP address: {e}")
 
-       
 
 @app.route('/api/download_email_draft',methods=['GET'])
 def download_email_draft():
-    return jsonify ({"message":f"DONT HAVE THIS ON MAC "}),400
-    # pythoncom.CoInitialize()  # Initialize COM library
-
-    # # Convert ImmutableMultiDict to a regular dictionary
-    # data = request.args.to_dict(flat=False)
-
-    # # Convert to list of dictionaries
-    # data_list = []
-    # for key, value in data.items():
-    #     if '[' in key and ']' in key:
-    #         index = int(key[key.index('[') + 1:key.index(']')])
-    #         subkey = key[key.index(']') + 2:]
-    #         while len(data_list) <= index:
-    #             data_list.append({})
-    #         clean_key = subkey[:-1] if subkey.endswith(']') else subkey
-    #         data_list[index][clean_key] = value[0]  # value is a list, take the first item
-
-    # # Append generation date
-    # data_list.append({'name': 'GenDate', 'value': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
-
-    # # Convert list of dictionaries to DataFrame
-    # data_dict = {d['name']: [] for d in data_list}
-    # for d in data_list:
-    #     data_dict[d['name']].append(d['value'])
-    # df = pd.DataFrame(data_dict)
-    # df = df.fillna(pd.NA)
-
-    # # Use the DataFrame to create email draft
-    # html_table = df.to_html(index=False)
-
-    # dfTable = ''
-    # for i, r in df.iterrows():
-    #     for col_name, value in r.items():
-    #         dfTable += f"<tr>\n"
-    #         dfTable += f"<td>{col_name}</td>\n"
-    #         dfTable += f"<td>{value}</td>\n"
-    #         dfTable += f"</tr>"
-
-    # table = f"""
-    #         <html>
-    #         <head>
-    #         <style>
-    #             table {{
-    #                 width: 100%;
-    #                 border-collapse: collapse;
-    #             }}
-    #             th, td {{
-    #                 padding: 10px;
-    #                 text-align: left;
-    #                 border: 1px solid #ddd;
-    #             }}
-    #             tr:nth-child(even) {{
-    #                 background-color: #f2f2f2;
-    #             }}
-    #             th {{
-    #                 background-color: #213547;
-    #                 color: white;
-    #             }}
-    #         </style>
-    #         </head>
-    #         <body>
-    #         <p>Shift Report for: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
-    #         <table class="dataframe">
-    #             <thead>
-    #                 <tr>
-    #                     <th>Column</th>
-    #                     <th>Value</th>
-    #                 </tr>
-    #             </thead>
-    #             <tbody>
-    #                 {dfTable}
-    #             </tbody>
-    #         </table>
-    #         </body>
-    #         </html>
-    #         """
-
-    # html_content = f"""
-    # <html>
-    # <head></head>
-    # <body>
-    # <p>Shift Report for: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
-    # {table}
-    # </body>
-    # </html>
-    # """
     
-    # # Print the HTML content to ensure it's well-formed
+    pythoncom.CoInitialize()  # Initialize COM library
 
-    # try:
-    #     # Create an instance of the Outlook application
-    #     outlook = win32.Dispatch("Outlook.Application")
-    #     # Create a new mail item
-    #     mail = outlook.CreateItem(0)
-    #     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    #     headerstr = 'Shift Report for: ' + now_str 
+    # Convert ImmutableMultiDict to a regular dictionary
+    data = request.args.to_dict(flat=False)
+    print("I AM PRINTING")
+    print(data.items())
 
-    #     # Set the mail item properties
-    #     mail.Subject = "Daily Report"
-    #     mail.BodyFormat = 2  # Set the email body format to HTML
-    #     mail.HTMLBody = table
-    #     mail.To = mailTo
-    #     mail.Cc = mailCc
+    # Convert to list of dictionaries
+    data_list = []
+    for key, value in data.items():
+        if '[' in key and ']' in key:
+            index = int(key[key.index('[') + 1:key.index(']')])
+            subkey = key[key.index(']') + 2:]
+            while len(data_list) <= index:
+                data_list.append({})
+            clean_key = subkey[:-1] if subkey.endswith(']') else subkey
+            data_list[index][clean_key] = value[0]  # value is a list, take the first item
 
-    #     # Specify the directory where you want to save the temporary file
-    #     custom_dir = 'C:\\Users\\pxie\\Desktop\\shiftreport\\api'  # Change this to your desired directory 'C:\\Users\\localuser\\Desktop\\shiftReport\\api'
-    #     if not os.path.exists(custom_dir):
-    #         os.makedirs(custom_dir)
+    # Append generation date
+    data_list.append({'name': 'GenDate', 'value': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
-    #     # Save the mail item as a draft in the specified directory
-    #     temp_file_path = os.path.join(custom_dir, 'email_draft.msg')  # Changed to .msg format
-    #     try:
-    #         mail.SaveAs(temp_file_path, 3)  # Save as .msg file
+    # Convert list of dictionaries to DataFrame
+    data_dict = {d['name']: [] for d in data_list}
+    for d in data_list:
+        data_dict[d['name']].append(d['value'])
+    df = pd.DataFrame(data_dict)
+    df = df.fillna(pd.NA)
 
-    #         # Return the file as an attachment
-    #         return send_file(temp_file_path, as_attachment=True)
-    #     except Exception as e:
-    #         return jsonify({"message":"Error in email drafts {e}"})
+    # Use the DataFrame to create email draft
+    html_table = df.to_html(index=False)
+
+    dfTable = ''
+    for i, r in df.iterrows():
+        for col_name, value in r.items():
+            dfTable += f"<tr>\n"
+            dfTable += f"<td>{col_name}</td>\n"
+            dfTable += f"<td>{value}</td>\n"
+            dfTable += f"</tr>"
+
+    table = f"""
+            <html>
+            <head>
+            <style>
+                table {{
+                    width: 100%;
+                    border-collapse: collapse;
+                }}
+                th, td {{
+                    padding: 10px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                }}
+                tr:nth-child(even) {{
+                    background-color: #f2f2f2;
+                }}
+                th {{
+                    background-color: #213547;
+                    color: white;
+                }}
+            </style>
+            </head>
+            <body>
+            <p>Shift Report for: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
+            <table class="dataframe">
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {dfTable}
+                </tbody>
+            </table>
+            </body>
+            </html>
+            """
+
+    html_content = f"""
+    <html>
+    <head></head>
+    <body>
+    <p>Shift Report for: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
+    {table}
+    </body>
+    </html>
+    """
+    
+    # Print the HTML content to ensure it's well-formed
+
+    try:
+        # Create an instance of the Outlook application
+        outlook = win32.Dispatch("Outlook.Application")
+        # Create a new mail item
+        mail = outlook.CreateItem(0)
+        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        headerstr = 'Shift Report for: ' + now_str 
+
+        # Set the mail item properties
+        mail.Subject = "Daily Report"
+        mail.BodyFormat = 2  # Set the email body format to HTML
+        mail.HTMLBody = table
+        mail.To = mailTo
+        mail.Cc = mailCc
+
+        # Specify the directory where you want to save the temporary file
+        custom_dir = 'C:\\Users\\pxie\\Desktop\\shiftreport\\api'  # Change this to your desired directory 'C:\\Users\\localuser\\Desktop\\shiftReport\\api'
+        if not os.path.exists(custom_dir):
+            os.makedirs(custom_dir)
+
+        # Save the mail item as a draft in the specified directory
+        temp_file_path = os.path.join(custom_dir, 'email_draft.msg')  # Changed to .msg format
+        try:
+            mail.SaveAs(temp_file_path, 3)  # Save as .msg file
+
+            # Return the file as an attachment
+            return send_file(temp_file_path, as_attachment=True)
+        except Exception as e:
+            return jsonify({"message":"Error in email drafts {e}"})
        
-    # finally:
-    #     pythoncom.CoUninitialize()  # Uninitialize COM library
+    finally:
+        pythoncom.CoUninitialize()  # Uninitialize COM library
 
 if __name__ == '__main__':
     getIP()

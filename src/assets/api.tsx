@@ -124,6 +124,34 @@ async function postModified(
   }
 }
 
+async function download(
+  filename: string,
+  extensionType: string,
+  postDirectory: string
+) {
+  try {
+    const response = await axios.get<string>(`${ipConnect}/${postDirectory}`, {
+      params: {
+        data: filename,
+      },
+      responseType: "blob",
+    });
+    const blob = new Blob([response.data]);
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${filename}-TimeDate:${formattedDate}.${extensionType}`; // Adjust filename as needed
+    document.body.appendChild(a);
+    a.click(); // Simulate click
+    document.body.removeChild(a);
+
+    // Clean up by revoking the URL object
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const downloadEmailDraftincident = async (inputValues: {
   [key: string]: string;
 }) => {
@@ -277,7 +305,7 @@ function generateTimeIntervals(
 //------------------------------ to fetch employees -----------------------------
 async function getNames(filename: string): Promise<Person[]> {
   try {
-    console.log(ipConnect);
+    // console.log(ipConnect);
     const response = await axios.get<string>(`${ipConnect}/api/getNames`, {
       params: {
         data: filename,
@@ -460,4 +488,5 @@ export default {
   generateTimeIntervals,
   appendDB,
   shiftreportDB,
+  download,
 };

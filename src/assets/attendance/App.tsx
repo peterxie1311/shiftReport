@@ -52,28 +52,16 @@ const App: React.FC = () => {
   ];
   const reason: string[] = [
     "Reason",
-    "Sick / NWR Injury",
-    "Work-Related Injury",
-    "Bereavement",
-    "Other Excused",
-    "Unexcused Absence",
-    "Disciplinary / Susp",
-    "Car / Commute Issue",
-    "Personal / Family",
-    "Traffic / Bad Weather",
-    "Woke-up late",
-    "Personal / Family ",
-    "Sick / NWR Injury",
-    "Work-Related Injury",
-    "Low Volume",
-    "Other",
-    "Short (absences)",
-    "Special Projects",
-    "Customer",
-    "Parental",
-    "Support",
-    "Training",
-    "Other",
+    "Sick",
+    "Sick (Med Cert Requested)",
+    "Annual Leave",
+    "No Show No Call",
+    "Carer's Leave",
+    "Work Cover",
+    "Unfit for work",
+    "Travel",
+    "NWR Injry",
+    "Sick - Unable to Complete Shift",
   ];
   const allocation: string[] = [
     "Allocation",
@@ -310,6 +298,14 @@ const App: React.FC = () => {
     );
   }
 
+  function download() {
+    api.download(
+      `nameslist ${selectedCrew["Select a Crew"]}.csv`,
+      "html",
+      "/api/getAllocations"
+    );
+  }
+
   function commitAllocations(array: Person[]) {
     const commitAlloc = array.filter((person) => person.Commit === "Yes");
     api.postModified(
@@ -410,20 +406,7 @@ const App: React.FC = () => {
   return (
     <>
       <header>
-        <Witron
-          navItems={[
-            "Incident Report",
-            "Attendance",
-            "Shift Report",
-            "Allocations",
-          ]}
-          links={[
-            "/src/assets/incident/index.html",
-            "/src/assets/attendance/index.html",
-            "/index.html",
-            "/src/assets/allocation/index.html",
-          ]}
-        />
+        <Witron />
       </header>
       <main>
         <div className="main-content">
@@ -486,6 +469,7 @@ const App: React.FC = () => {
               />
             ))}
           </div>
+
           <BoxTooltip
             input={[
               [
@@ -533,6 +517,13 @@ const App: React.FC = () => {
             onClick={() => commitAllocations(inputValues)}
           >
             Commit Allocations
+          </button>
+          <button
+            className="btn btn-secondary btn-sm"
+            style={{ marginRight: "0.5em" }}
+            onClick={() => download()}
+          >
+            Download PDF
           </button>
 
           <section className="workspace"></section>
